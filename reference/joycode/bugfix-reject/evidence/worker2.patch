@@ -1,0 +1,19 @@
+--- evidence/inventory.before.py	2026-07-30 18:55:50
++++ fixture/inventory.py	2026-07-30 18:59:29
+@@ -19,14 +19,14 @@
+         if qty > self.available:
+             raise ValueError("not enough available")
+         self.reserved += qty
+-        # BUG#1: 漏了 self.available -= qty
++        self.available -= qty
+ 
+     def unreserve(self, qty):
+         """取消预留：应增加 available、减少 reserved。"""
+         if qty > self.reserved:
+             raise ValueError("not enough reserved")
+         self.reserved -= qty
+-        # BUG#2: 漏了 self.available += qty
++        self.available += qty
+ 
+     def ship(self, qty):
+         """发货已预留的库存：减少 reserved 与 on_hand。"""

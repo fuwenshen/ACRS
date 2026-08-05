@@ -1,0 +1,16 @@
+{
+  "_comment": "Handoff Package 模板（承 RFC-002 WHAT）。跨实例传递的唯一载体（P-9）。具体字段按各 agent 的 handoff.md/prompt.md。",
+  "task": {
+    "task_id": "",
+    "goal": "",
+    "constraints": []
+  },
+  "workspace": {
+    "repo": "",
+    "changed_files": []
+  },
+  "evidence_refs": [],
+  "required_output": [],
+  "reject_reason": null,
+  "_note": "只放引用与约束，不放日志/对话正文。"
+}

@@ -1,0 +1,90 @@
+# ACRS ROADMAP
+
+> 节奏总览。原则：**规范已够用，下一阶段让它经受真实工程检验，而不是继续在文档层加抽象。**
+> 图例：✅ 完成 · 🟡 进行中/部分 · ⬜ 未开始
+>
+> **北极星（Adoption 期，2026-07-30 立）**：开发者几乎感觉不到 ACRS 存在、却始终按它工作
+> （Context 生命周期对业务透明）。⚠️ 透明是**成熟产品**的终点，非**验证期**目标——验证期需可观测以收集 findings。
+>
+> **决策（2026-07-30）：Bootstrap/Session 不设为第五层。** 它是横跨 Binding(on_init)/Convention(必载 acrs-shared)/Core(Handoff 续接)
+> 的**横切契约**，不新增内容，按 P8 只做成 `docs/bootstrap.md` 文档，不与 Core/Convention/Binding 并列。
+> 其"运行段"(Spawn/Handoff/Done)即 Mental Model 环，不重复造概念。`lifecycle.md`/`faq.md` 暂不写（避免重复与零用户虚构）。
+>
+> **决策（2026-07-30）：Activation 命名进 P4，不新增 P10。** "行为是激活出来的不是内嵌的"(Role+Convention+Domain=Executable Agent)
+> 是准确洞察，但它拦的错误与 P4 的检查同源（行为该进 Convention 而非写死 agent.md）——按 P8，给 P4 换说法不构成新契约。
+> 故写进 P4 正文 + `docs/bootstrap.md` Activation 节，principle 数量不增。
+>
+> **决策（2026-07-30，修订）：抽象冻结是【阶段性】的，不是永久原则。**
+> 表述为「**During Validation phase**, every abstraction must be earned by repeated production findings」——
+> 只在**验证期**生效，防的是"零验证时空谈概念"。**不写成永久"禁止新增抽象"**：未来 Claude/Codex/Codex/多-Agent-Runtime
+> 的新能力**可能真的逼 Core 演进**，永久冻结会反噬自己。**解冻门槛**：某概念被 **≥2 个真实 Production Findings 反复暴露**
+> （与 P8/P9 同源），才有资格进 Core/PRINCIPLES。**验证期内抽象冻结**：新概念须先经 ≥2 条真实 Production Findings 证明，才谈进 Core。
+
+## Phase 0 · 理念探索 ✅
+- ✅ 为什么需要 Multi-Agent（Manifesto）
+
+## Phase 1 · 规范设计 ✅（约 85%，**主动停在这里**）
+- ✅ RFC-000 Scope / Manifesto（Frozen 思想）
+- ✅ RFC-000A Terminology（Frozen）
+- 🟡 RFC-001 Runtime Lifecycle（Draft；§3.1 已由 RI-002 实证）
+- ✅ core/agent-contract（五段式 Schema + INV-VERIFY）+ agent-catalog（含准入闸门）
+- ⬜ RFC-002 Handoff **不冻结**——见下方"RFC-002 冻结门槛"
+- ⬜ RFC-003/004/005 待补（不急，等真实反馈）
+- 📌 **决定：暂停写新 RFC。** 无真实验证，继续写 RFC 边际收益递减。
+
+## Phase 2 · Reference Implementation ← 现在
+- ✅ acrs-shared（SKILL.md 行为规范层 + DESIGN.md 设计边界）
+- ✅ Thin Agent 模式跑通（orchestrator/backend/review 已接 `on_init: [acrs-shared, 领域skill]`）
+- ✅ PRINCIPLES.md（防再膨胀的自检铁律）
+- ✅ bindings 结构：`bindings/joycode/{app,cli,skills}`（App/CLI = 同平台两入口）
+- ⬜ 领域 Skill：`java-backend`、`code-review`（**下一步 #2**，本 ROADMAP 后紧接）
+- 🟡 Reference 样例：✅ RI-001 BugFix · ✅ RI-002 强制 REJECT · ✅ 可移植性(App vs CLI)
+  · ⬜ Feature · ⬜ Refactor · ⬜ Architecture
+
+## Phase 3 · Validation ⬜（最重要，价值最高；方法见 `validation/README.md`）
+**顺序调整**：DX 先行 → 真实项目跑 findings → 重复问题才沉淀成 Benchmark（Benchmark 来源于真实反复出现的问题，不凭空设计）。
+- 🟢 ① **Quick Start + Mental Model + Bootstrap（DX 起步）**：`README`（Mental Model 动词环头图 + Entry Adapter 图 + 透明北极星）、`docs/mental-model.md`、`docs/quick-start.md`、`docs/bootstrap.md`（各平台启动加载链）（本轮完成）。
+- ⬜ ② **真实项目连续使用**：在真实 Java 后端项目里用 ACRS 做真实任务，产出定性 **Findings**（Production 线）。
+- ⬜ ③ **Findings 分类闸门**：每条 Finding 先归 Core / Convention / Binding / Usage(DX)，**再决定改不改**（防 Core 被平台问题污染，见 `validation/README.md`）。
+- ⬜ ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。
+- ⬜ ⑤ **Rule of Three**：同类内容真实重复 ≥3 次，才进入下一步。
+- ⬜ ⑥ **Skill Extraction**：把重复的 Prompt 抽成领域 Skill（Phase 4）。
+- ⬜ ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。
+- 📌 **诚实边界**：真实项目跑不出干净 A/B，前期证据是**定性 findings 而非对照数字**；
+  "ACRS 提高了成功率 X%" 这类结论要等 ⑦ Benchmark，别用 findings 预支。
+
+## Phase 3.5 · Product-ization ⬜（刻意推迟——用第一个真实成功来换产品壳）
+> 决策（2026-07-30）：ACRS 终将是**产品**不是 RFC，但"Product First"不能提前于 Validation。
+> 在真实项目上**零验证**时就重命名成 Install/Getting-Started/Contributing、写"5 分钟跑通"营销 README，
+> 是"过拟合"的升级版——**包装超前于实质 = 门面**。故 DX 现在只做到"诚实的文档"，产品化闸门如下：
+- **触发条件**：至少 1 个真实 Production case 跑通 + 首批 Findings 归档。
+- **届时才做**：文档改产品语义（Installation / Getting Started / Your First Task / Architecture / Validation / Contributing）；ACRS Lifecycle 生命周期图（安装→配置→首开发→首 Review→首 Reject→首 Handoff→Done）；README 卖"完成第一个任务"而非"结构说明"。
+- **不做**：在此之前套产品壳。
+
+## Phase 4 · Extraction ⬜（抽象，Skill 是 ⑤⑥ 的产物）
+- ⬜ 领域 Skill（如 java-backend / code-review）只在真实重复 ≥3 次后抽取（P9），非设计阶段预设。
+
+## Phase 5 · 跨平台 ⬜
+- ⬜ Claude Code binding（CLAUDE.md 作入口载体）——此时才触发 bindings 目录进一步重排
+- ⬜ Codex（AGENTS.md）· Cursor（Rules）
+- ⬜ **可移植对照**：同一套 Benchmark 上 JoyCode+ACRS vs ClaudeCode+ACRS vs Codex+ACRS
+- 🎯 成功判据：同一 Core，仅换 Binding 就保持一致行为；若需动 Core，说明规范里仍混着平台细节。
+- ⬜ **ACRS Capability Support Matrix**（**以后才做，非现在**）：`ACRS 能力（Evidence/Boundary/Handoff/Verification/Spawn/Context/Activation/Convention…）× 平台` 的支持矩阵，回答"这个平台支持哪些 ACRS 能力"。
+  - ⚠️ 与现有 `bindings/joycode/app/capability-matrix.md`（JoyCode 内部诚实缺口）**不是一回事**，命名要区分。
+  - 前提：**≥2 个平台 binding 落地**才有意义；现在只有 JoyCode + 零验证能力，建它=过拟合。可自动生成，留到那时。
+
+---
+
+## RFC-002 冻结门槛（三条实证，缺一不冻）
+- ✅ REJECT 回环 + 打回 Spawn 新实例（RI-002）
+- ⬜ Context 溢出续接（同类实例 Handoff 接力）——尚无实跑
+- ⬜ 三层递归 SubAgent + CONV-TREE（每级只管直接子节点）——尚无实跑
+> 前两阶段的 RI 都在 CLI 用 Agent 工具跑；APP 原生 Agent-to-Agent 时序仍待直接实测。
+
+## 当前下一步（按性价比，DX + 真实项目优先）
+1. ✅ acrs-shared 设计规范 + PRINCIPLES(P1–P9) + Validation 方法规范
+2. ✅ DX 起步：README（Mental Model 动词环 + Entry Adapter 图）、docs/mental-model.md、docs/quick-start.md
+3. ✅ Validation PDCA + Findings 分类闸门（Core/Convention/Binding/Usage）写进 validation/README
+4. ⬜ **选定第一个真实验证项目**，在其上用 ACRS 做真实任务，产出首批 findings（`validation/production/case-001/`）
+5. ⬜ 每条 finding 过分类闸门 → 哪层问题改哪层；重复 ≥3 次才抽 Skill / 沉淀 Benchmark
+6. ⬜ 产品化（Phase 3.5）等首个真实 case 跑通后再启动，不提前套壳

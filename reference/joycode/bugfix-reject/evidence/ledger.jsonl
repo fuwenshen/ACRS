@@ -1,0 +1,12 @@
+{"seq":0,"phase":"observe","by":"orchestrator","kind":"baseline","ref":"evidence/baseline-test.log","exit_code":1,"summary":"两bug并存:test_reserve失败,test_unreserve被掩盖通过,test_ship通过"}
+{"seq":1,"phase":"spawn","by":"orchestrator","route":"Spawn(backend#1)","agent_type":"backend","handoff":{"failing_cmd":"python3 run_tests.py test_reserve_reduces_available","scope":"scoped"},"summary":"派Worker#1,scoped repro"}
+{"seq":2,"phase":"collect","by":"orchestrator","kind":"patch","ref":"evidence/worker1.patch","summary":"Worker#1只改reserve"}
+{"seq":3,"phase":"collect","by":"orchestrator","kind":"test_log","ref":"evidence/worker1-test.log","exit_code":0,"summary":"Worker#1回传:scoped test绿,exit0"}
+{"seq":4,"phase":"spawn","by":"orchestrator","route":"Spawn(review#1)","agent_type":"review","handoff":{"acceptance":"python3 run_tests.py (full)"},"summary":"派独立Reviewer#1,full suite验收"}
+{"seq":5,"phase":"collect","by":"orchestrator","kind":"review","ref":"evidence/reviewer1-test.log","exit_code":1,"verdict":"REJECT","summary":"Reviewer#1独立重跑full:test_unreserve被解开后失败→REJECT"}
+{"seq":6,"phase":"route","by":"orchestrator","route":"Spawn(backend#2)","note":"新实例新Context,不唤醒Worker#1,带reject_reason","summary":"REJECT回环,续修实例"}
+{"seq":7,"phase":"collect","by":"orchestrator","kind":"patch","ref":"evidence/worker2.patch","summary":"Worker#2补unreserve,累计两处对称修复"}
+{"seq":8,"phase":"collect","by":"orchestrator","kind":"test_log","ref":"evidence/worker2-test.log","exit_code":0,"summary":"Worker#2回传:full suite 3/3绿,exit0"}
+{"seq":9,"phase":"spawn","by":"orchestrator","route":"Spawn(review#2)","agent_type":"review","summary":"派独立Reviewer#2终验"}
+{"seq":10,"phase":"collect","by":"orchestrator","kind":"review","ref":"evidence/reviewer2-test.log","exit_code":0,"verdict":"PASS","summary":"Reviewer#2独立重跑full:3/3绿→PASS"}
+{"seq":11,"phase":"done_gate","by":"orchestrator","kind":"readonly_verify","exit_code":0,"summary":"Orchestrator只读终验full suite exit0,三判据齐,Route=Finish"}

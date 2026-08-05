@@ -1,0 +1,10 @@
+--- evidence/inventory.before.py	2026-07-30 18:04:05
++++ fixture/inventory.py	2026-07-30 18:04:16
+@@ -39,5 +39,5 @@
+         if qty > self.reserved:
+             raise ValueError("cannot ship more than reserved")
+         self.on_hand -= qty
+-        # BUG: 发货后忘了同步释放预留（缺 self.reserved -= qty），
+-        # 导致 reserved 只增不减、available() 越算越小甚至变负。
++        # 发货后同步释放对应预留，避免 reserved 只增不减、available() 算错。
++        self.reserved -= qty
