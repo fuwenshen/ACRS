@@ -65,6 +65,7 @@ ACRS 的终态不是"设计得漂亮"，而是——**开发者几乎感觉不�
 > 治理原则见 [PRINCIPLES.md](PRINCIPLES.md)（P1–P9）；节奏见 [ROADMAP.md](ROADMAP.md)；验证机制见 [validation/README.md](validation/README.md)。
 
 ## 从哪开始
+- 装进你的项目 → `bin/acrs-install.sh --target <项目目录> --platform joycode-cli`（`--dry-run` 先预览；仅支持已有 binding 的 JoyCode）
 - 想 5 分钟上手 → **[docs/quick-start.md](docs/quick-start.md)**（我是 JoyCode 用户怎么用上 ACRS）
 - 想懂"它怎么跑" → **[docs/mental-model.md](docs/mental-model.md)**（动词环）
 - 想懂"任务怎么启动它" → **[docs/bootstrap.md](docs/bootstrap.md)**（各平台加载链）
