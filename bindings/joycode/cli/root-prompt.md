@@ -90,5 +90,5 @@ Root#2 —— 从 handoff.json 恢复，Task 连续，Context 全新
 
 - ✅ 根 LLM 经 Agent 工具 Spawn 隔离 Worker + 独立 Reviewer（RI-001 A-1/A-2/B-1）。
 - ✅ Orchestrator Context 未随 worker 数增长（RI-001 B-2）。
-- ◻ REJECT 回环（Reviewer 拒 → Spawn Worker#2）在 CLI 上未实跑（RI-001 D-1）。
+- ✅ REJECT 回环（Reviewer 拒 → Spawn Worker#2 重来）已由 RI-002 实证（`reference/joycode/bugfix-reject/`，2026-09 更正——此前误标"未实跑"）。
 - ◻ Root 溢出续接（§4）未实跑（RI-001 D-2）。

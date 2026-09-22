@@ -20,12 +20,25 @@
 
 ---
 
-## 🟢 JoyCode CLI（当前最可靠的入口）
+## 🟢 形态 B · ACRS-native Skills（主推，case-001 验证主线）
+6 角色 Skill + 6 Agent 入口装进 `~/.joycode/`（全局用户级，所有项目可用）：
+
+```bash
+cd <ACRS 仓库>
+bash install.sh   # 写 ~/.acrs/path 指针
+bin/acrs sync     # 部署 + 校验（幂等；源=仓库本体，单向以仓库为准）
+```
+
+然后任意项目对话里点名 Agent（如「派 ACRS Architect 做 XX 设计」）或让总控分诊。
+资产接入见 `acrs attach`（`bin/acrs` --help）。
+
+## 🟢 形态 A · JoyCode CLI 行为模拟（RI-001/002 已实证）
 ACRS 的 RI-001/002 都是在这里真跑出来的。
 
 1. 打开你的项目，启动 JoyCode CLI。
 2. 把 [`bindings/joycode/cli/root-prompt.md`](../bindings/joycode/cli/root-prompt.md) 的内容作为会话的根提示词
-   （它已内联 acrs-shared 的行为规范：Handoff / Evidence / Done Gate / INV-VERIFY / Spawn）。
+   （它内联了 acrs-shared 的**核心行为**：Route/Spawn/INV-VERIFY/Done Gate/溢出续接；
+   非全量——R10–R13 未入，完整版以 [`skills/acrs-shared/SKILL.md`](../skills/acrs-shared/SKILL.md) 为准）。
 3. 直接给任务，例如"修复 XXX 这个 bug"。根提示词会让单个 Context 扮演
    Orchestrator → Backend → Review 的行为，REJECT 后 Spawn 新实例重来。
 4. 完成时你会拿到：改动 diff + 测试退出码 + review 结论——都是可核对的**证据引用**，不是"我觉得好了"。
@@ -40,7 +53,7 @@ ACRS 的 RI-001/002 都是在这里真跑出来的。
 
 1. 安装 JoyCode APP。
 2. 导入 [`bindings/joycode/app/agents/`](../bindings/joycode/app/agents/)（orchestrator / backend / review）
-   与 [`bindings/joycode/skills/`](../bindings/joycode/skills/)（acrs-shared 等）。
+   与 [`skills/`](../skills/)（acrs-shared 等，平台无关的能力资产）。
 3. 打开项目，选择 **Orchestrator** 作为入口 Agent。
 4. 预期行为：`Orchestrator → Backend → Review →（REJECT）→ Backend#2 → Done`，
    跨实例状态只走 Handoff Package。

@@ -19,5 +19,5 @@
 ## 两个入口的落地物分工（App/CLI 是同一平台 JoyCode 的两个入口）
 - **APP（入口=Agent，原生 Runtime）**：`bindings/joycode/app/`——真 Agent 编排（Agent Call / 递归 / Resume 由平台提供）。
 - **CLI（入口=Skill / Root Prompt，行为模拟）**：`bindings/joycode/cli/root-prompt.md`——单 Context 装出多 Agent 行为。
-- **共享 Skill**：`bindings/joycode/skills/acrs-shared/`——两个入口都必加载的行为规范层。
+- **共享 Skill**：`skills/acrs-shared/`（仓库顶层，平台无关的能力资产）——两个入口都必加载的行为规范层。
 - **Reference Project（真跑证据）**：`reference/joycode/bugfix/`（RI-001）+ `bugfix-reject/`（RI-002 + 可移植性实验）。

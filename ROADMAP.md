@@ -41,15 +41,18 @@
 - 🟡 Reference 样例：✅ RI-001 BugFix · ✅ RI-002 强制 REJECT · ✅ 可移植性(App vs CLI)
   · ⬜ Feature · ⬜ Refactor · ⬜ Architecture
 
-## Phase 3 · Validation ⬜（最重要，价值最高；方法见 `validation/README.md`）
+## Phase 3 · Validation 🟡（最重要，价值最高；方法见 `validation/README.md`）
 **顺序调整**：DX 先行 → 真实项目跑 findings → 重复问题才沉淀成 Benchmark（Benchmark 来源于真实反复出现的问题，不凭空设计）。
 - 🟢 ① **Quick Start + Mental Model + Bootstrap（DX 起步）**：`README`（Mental Model 动词环头图 + Entry Adapter 图 + 透明北极星）、`docs/mental-model.md`、`docs/quick-start.md`、`docs/bootstrap.md`（各平台启动加载链）（本轮完成）。
-- ⬜ ② **真实项目连续使用**：在真实 Java 后端项目里用 ACRS 做真实任务，产出定性 **Findings**（Production 线）。
-- ⬜ ③ **Findings 分类闸门**：每条 Finding 先归 Core / Convention / Binding / Usage(DX)，**再决定改不改**（防 Core 被平台问题污染，见 `validation/README.md`）。
-- ⬜ ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。
+- 🟢 ②′ **case-000 回溯归档（2026-09-20）**：diy-orc 六周生产缺陷史（7 findings：F-001~F-007）逐条过分类闸门——6 Convention（3 条 Core 候选）/ 1 Binding / 0 Usage；F-002/003/004 终态 B·Promoted（≥2 次独立暴露，benchmark 候选）。**注意：回溯证据等级，非全流程跑通**——Phase 3.5 的"1 个真实 case 跑通"条件仍由 case-001 满足。
+- 🟢 ②″ **ACRS-native Skills 落地（2026-09-20）**：按闸门结论重建 Skill 套装——acrs-shared 增补 R10~R13（澄清前置 / Acceptance 契约 / 接地模式谱系 / result 协议，均标 case-000 来源）+ 6 个角色 Skill（orchestrator / architect / backend / test / critic / solo，去 MCP 依赖、来源标注），本体住仓库顶层 `skills/acrs-*`（**能力资产，平台无关**）；JoyCode Binding 侧 = `bindings/joycode/agents/ACRS *`（6 薄入口）+ `bindings/joycode/install/`（部署说明），部署副本装于 `~/.joycode/skills/acrs-*` 与 `~/.joycode/agents/`。diy-orc 7 件套降级为历史参考实现，保留可回退。
+- 🟢 ②‴ **资产层落地（2026-09-21）**：`assets/`（跨项目工程标准，首份 payment/java-backend-guardrails 脱敏自 fin-buddy@676aab9）+ 团队接入入口（根 `install.sh` 写 `~/.acrs/path` 指针 + `bin/acrs` init/path/assets/attach/feedback）+ 自我进化反哺闭环（每资产 `FEEDBACK.md` append-only 记录 → Rule of Three 消化：派生资产路由上游改源、原生资产直接改）。协议见 `assets/README.md`。**定位：资产层是 Phase 4 Extraction 的前置实验田**（资产被 ≥2 项目复用 → 候选抽 skill），不新增 Core 概念。
+- ⬜ ② **真实项目连续使用**：在真实 Java 后端项目里用 **ACRS-native Skills** 做真实任务，产出定性 **Findings**（Production 线，case-001 起）。**现成首跑场景：资产三步接入（attach → 注入包携带 → DC 条目化 → Critic 勾对）。**
+- 🟡 ③ **Findings 分类闸门**：每条 Finding 先归 Core / Convention / Binding / Usage(DX)，**再决定改不改**（防 Core 被平台问题污染，见 `validation/README.md`）。case-000 已首次走闸门（回溯补审）。
+- ⬜ ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。case-000 的 3 条 Core 候选（F-002→agent-contract §3 细则、F-003→RFC-001、F-004→agent-catalog）待后续 RFC 增补。
 - ⬜ ⑤ **Rule of Three**：同类内容真实重复 ≥3 次，才进入下一步。
 - ⬜ ⑥ **Skill Extraction**：把重复的 Prompt 抽成领域 Skill（Phase 4）。
-- ⬜ ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。
+- 🟡 ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。case-000 已登记 3 个 benchmark 候选（评审注入污染 / 澄清前置 / SOLO vs 拆分链），待 harness。
 - 📌 **诚实边界**：真实项目跑不出干净 A/B，前期证据是**定性 findings 而非对照数字**；
   "ACRS 提高了成功率 X%" 这类结论要等 ⑦ Benchmark，别用 findings 预支。
 
@@ -63,6 +66,7 @@
 
 ## Phase 4 · Extraction ⬜（抽象，Skill 是 ⑤⑥ 的产物）
 - ⬜ 领域 Skill（如 java-backend / code-review）只在真实重复 ≥3 次后抽取（P9），非设计阶段预设。
+- 📌 **资产 → Skill 升级通道（2026-09-21 立）**：`assets/` 中某资产被 ≥2 项目独立复用且 FEEDBACK 消化过至少一轮 → 候选抽成领域 Skill 进 `skills/`（与 ⑥ 同判据；资产层是其前置实验田）。
 
 ## Phase 5 · 跨平台 ⬜
 - ⬜ Claude Code binding（CLAUDE.md 作入口载体）——此时才触发 bindings 目录进一步重排
@@ -85,6 +89,6 @@
 1. ✅ acrs-shared 设计规范 + PRINCIPLES(P1–P9) + Validation 方法规范
 2. ✅ DX 起步：README（Mental Model 动词环 + Entry Adapter 图）、docs/mental-model.md、docs/quick-start.md
 3. ✅ Validation PDCA + Findings 分类闸门（Core/Convention/Binding/Usage）写进 validation/README
-4. ⬜ **选定第一个真实验证项目**，在其上用 ACRS 做真实任务，产出首批 findings（`validation/production/case-001/`）
+4. 🟡 **选定第一个真实验证项目**，在其上用 ACRS-native Skills 做真实任务，产出首批 findings（`validation/production/case-001/`；case-000 为 diy-orc 回溯归档已完成）
 5. ⬜ 每条 finding 过分类闸门 → 哪层问题改哪层；重复 ≥3 次才抽 Skill / 沉淀 Benchmark
 6. ⬜ 产品化（Phase 3.5）等首个真实 case 跑通后再启动，不提前套壳

@@ -50,9 +50,11 @@ ACRS 的终态不是"设计得漂亮"，而是——**开发者几乎感觉不�
 | 层 | 位置 | 是什么 |
 | --- | --- | --- |
 | **L1 Core** | `RFC/` `core/` | 协议与不变量（含 INV-VERIFY）。改动需 RI 实证。 |
-| **L2 Convention** | `bindings/joycode/skills/acrs-shared/` | 所有 Agent 必守的行为，平台无关。 |
-| **L3 Binding** | `bindings/joycode/{app,cli}/` | 平台入口载体（当前只做了 JoyCode）。 |
+| **L2 Convention** | `skills/acrs-shared/` | 所有 Agent 必守的行为，平台无关。 |
+| **L3 Binding** | `bindings/joycode/{app,cli}/` | 平台入口载体——Skill 怎么被该平台加载/执行（当前只做了 JoyCode）。 |
 | **L4 Validation** | `validation/` `reference/` | 真实/可复现地跑，证明它有用。 |
+
+> **Skill 是 ACRS 的能力资产**（`skills/`，做什么/怎么做）；**Binding 只管接入**（某平台怎么加载它）。Skill 本体不属于任何平台。
 
 ## 现在处于哪一步（成熟度自评，不自封稳定）
 - Core ★★★★☆ —— 设计自洽（RFC-000/000A 冻结、含 INV-VERIFY），但**从未在真实项目里活过一次**，"稳定"要靠 Validation 挣。
@@ -65,7 +67,19 @@ ACRS 的终态不是"设计得漂亮"，而是——**开发者几乎感觉不�
 > 治理原则见 [PRINCIPLES.md](PRINCIPLES.md)（P1–P9）；节奏见 [ROADMAP.md](ROADMAP.md)；验证机制见 [validation/README.md](validation/README.md)。
 
 ## 从哪开始
-- 装进你的项目 → `bin/acrs-install.sh --target <项目目录> --platform joycode-cli`（`--dry-run` 先预览；仅支持已有 binding 的 JoyCode）
+**JoyCode 双路径（2026-09-21 收口）**：
+
+- **形态 B · ACRS-native Skills（主推，case-001 验证主线）**：
+  `bash install.sh && bin/acrs sync` —— 部署 6 角色 Skill + 6 Agent 入口到 `~/.joycode/`（全局用户级，所有项目可用；`acrs sync` 幂等可重跑校验漂移，单向以仓库为准）
+- **形态 A · CLI 行为模拟（RI-001/002 已实证）**：
+  `bin/acrs-install.sh --target <项目目录> --platform joycode-cli`（`--dry-run` 先预览）—— 项目级 `.acrs/` + 根提示词，单 Context 模拟 Orchestrator→Backend→Review
+
 - 想 5 分钟上手 → **[docs/quick-start.md](docs/quick-start.md)**（我是 JoyCode 用户怎么用上 ACRS）
 - 想懂"它怎么跑" → **[docs/mental-model.md](docs/mental-model.md)**（动词环）
 - 想懂"任务怎么启动它" → **[docs/bootstrap.md](docs/bootstrap.md)**（各平台加载链）
+
+## 路径规范与导读
+目录语义、Artifact 命名（`handoff.yaml` / `evidence.yaml` / `review.yaml` / `result.md`——文件名表达类型而非 Agent）、谁读谁写生命周期、以及"业务代码目录 ≠ `.acrs/` 工作目录"铁律，统一见 **[docs/layout.md](docs/layout.md)**。核心三条：
+- **目录语义固定**：每个目录承担什么语义查表即得，Agent 不需要猜。
+- **文件名表达 Artifact 类型**：`backend-handoff.yaml` ❌ → `handoff.yaml` ✅。
+- **协作状态不进业务树**：Agent 协作状态全部落在目标项目 `.acrs/` 下，删掉它项目必须照常构建。

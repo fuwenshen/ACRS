@@ -12,9 +12,12 @@
 就等于这些不变量可以被绕过。故它是**每个 ACRS Agent 的启动前提**，不是可选增强。
 
 ## §2 准入：MUST 放什么
-仅限以下且**每条 MUST 能追溯到一个 Core 来源**（RFC-00x / agent-contract §y）：
+仅限以下且**每条 MUST 能追溯到一个已过闸门的来源**（RFC-00x / agent-contract §y / validation case finding）：
 - Context 规则、Handoff 规则、Evidence 规则、Boundary/Done Gate、INV-VERIFY、
   Worker Loop 骨架、Spawn 规则、Archive 规则、Escalation。
+- **finding 来源**（2026-09-20 起，依据 case-000）：经 validation 四分类闸门归层为
+  Convention 的 finding 可固化入本 Skill，标注 `（来源：case-00x#F-yy）`；
+  Core 候选条目须同时标注候选去向（待哪个 RFC 增补）。
 - 判据：**"所有 Agent（不分领域、不分平台）都必须守"** 的行为，才够格进来。
 
 ## §3 禁止：MUST NOT 放什么（违反即应移出）
@@ -24,7 +27,7 @@
 | 平台调用细节：怎么调 Agent 工具、怎么写 CLAUDE.md | 各 Binding（`app/` `cli/` …）|
 | 某个角色专属职责（只有 reviewer 要守 / 只有 architect 要守）| 该角色的领域 Skill 或 agent bundle |
 | 运行时旋钮：retry / hooks / tool policy / model 选择 | Binding；或根本不该存在（见 Principles P3）|
-| Core 里还没有的**新**行为规则 | **先去改 Core**（RFC/agent-contract），再回来固化 |
+| Core 里还没有的**新**行为规则 | **先过闸门**：validation case finding 归层 Convention 后固化（标 case 引用），或先改 Core（RFC/agent-contract）再回来固化 |
 
 ## §4 什么时候从 acrs-shared 拆出新 Skill
 出现下列任一，该内容**不属于** acrs-shared，拆成领域/角色 Skill，由需要的 Agent `on_init` 加载：
@@ -47,7 +50,9 @@
 
 ## §6 尺寸预算（防胖硬约束）
 - **目标上限**：SKILL.md 正文 ≲ 400 行 / ≈ 3.5K token（每个 Agent 都要吞它，预算是全局乘数）。
-- **实测基线（2026-07-30）**：SKILL.md **3526 字符 / 92 行**，DESIGN.md 2009 字符。以此为增长起点。
+- **实测基线（2026-07-30）**：SKILL.md 3526 字符 / 92 行。
+- **增补记录（2026-09-20，case-000 过闸固化）**：+R10~R13（澄清前置 / Acceptance 契约 /
+  接地模式谱系 / result 协议），现 115 行。仍在预算内；下次改动继续记录增量。
 - **趋势监控（比单点上限更重要）**：记录 SKILL.md 体量轨迹，如 `3.5K→3.8K→4.2K→5.0K`。
   **持续单调上涨 = Convention 正在吞噬 Domain**——这是全项目最该盯的维护信号（Core/Binding/Entry 都稳定，天天改的是这里）。
 - **触发复审**：逼近上限**或**连续 3 次提交只增不减 → MUST 先按 §3/§4 往外拆，**不得靠加内容解决问题**。
