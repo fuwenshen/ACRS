@@ -26,11 +26,13 @@
 ## Phase 1 · 规范设计 ✅（约 85%，**主动停在这里**）
 - ✅ RFC-000 Scope / Manifesto（Frozen 思想）
 - ✅ RFC-000A Terminology（Frozen）
-- 🟡 RFC-001 Runtime Lifecycle（Draft；§3.1 已由 RI-002 实证）
+- ✅ RFC-000B Core Admission Protocol（Active v1.0，2026-09-22——打通 Convention→Core 上行通道；F-002/F-003/F-004 登记 Pending，待协议经一次真实闭环验证后逐条 Review）
+- 🟡 RFC-001 Runtime Lifecycle（**Frozen Candidate v0.2**——已按 RFC-000B 逐节标注实证；转 Frozen 差判据 1/3 各 1 次实证）
+- ✅ RFC/README.md（RFC 状态索引 + 三套原则编号对照表；登记断链：RFC-001 §7 引用的"Simple First"在 RFC-000 无编号条目）
 - ✅ core/agent-contract（五段式 Schema + INV-VERIFY）+ agent-catalog（含准入闸门）
 - ⬜ RFC-002 Handoff **不冻结**——见下方"RFC-002 冻结门槛"
 - ⬜ RFC-003/004/005 待补（不急，等真实反馈）
-- 📌 **决定：暂停写新 RFC。** 无真实验证，继续写 RFC 边际收益递减。
+- 📌 **决定：暂停写新 RFC。** 无真实验证，继续写 RFC 边际收益递减。（例外：经 RFC-000B Admission Review 的**增补**不受此限——增补不重写，且必须实证准入。）
 
 ## Phase 2 · Reference Implementation ← 现在
 - ✅ acrs-shared（SKILL.md 行为规范层 + DESIGN.md 设计边界）
@@ -49,7 +51,7 @@
 - 🟢 ②‴ **资产层落地（2026-09-21）**：`assets/`（跨项目工程标准，首份 payment/java-backend-guardrails 脱敏自 fin-buddy@676aab9）+ 团队接入入口（根 `install.sh` 写 `~/.acrs/path` 指针 + `bin/acrs` init/path/assets/attach/feedback）+ 自我进化反哺闭环（每资产 `FEEDBACK.md` append-only 记录 → Rule of Three 消化：派生资产路由上游改源、原生资产直接改）。协议见 `assets/README.md`。**定位：资产层是 Phase 4 Extraction 的前置实验田**（资产被 ≥2 项目复用 → 候选抽 skill），不新增 Core 概念。
 - ⬜ ② **真实项目连续使用**：在真实 Java 后端项目里用 **ACRS-native Skills** 做真实任务，产出定性 **Findings**（Production 线，case-001 起）。**现成首跑场景：资产三步接入（attach → 注入包携带 → DC 条目化 → Critic 勾对）。**
 - 🟡 ③ **Findings 分类闸门**：每条 Finding 先归 Core / Convention / Binding / Usage(DX)，**再决定改不改**（防 Core 被平台问题污染，见 `validation/README.md`）。case-000 已首次走闸门（回溯补审）。
-- ⬜ ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。case-000 的 3 条 Core 候选（F-002→agent-contract §3 细则、F-003→RFC-001、F-004→agent-catalog）待后续 RFC 增补。
+- 🟡 ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。case-000 的 3 条 Core 候选（F-002→agent-contract §3 细则、F-003→RFC-001、F-004→agent-catalog）已登记于 RFC-000B §5 Pending——**待协议经一次真实闭环验证后逐条 Admission Review，不默认批量晋升**。
 - ⬜ ⑤ **Rule of Three**：同类内容真实重复 ≥3 次，才进入下一步。
 - ⬜ ⑥ **Skill Extraction**：把重复的 Prompt 抽成领域 Skill（Phase 4）。
 - 🟡 ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。case-000 已登记 3 个 benchmark 候选（评审注入污染 / 澄清前置 / SOLO vs 拆分链），待 harness。（harness 落地后的回归方法约束已预定义：`validation/README.md` §Harness 自身变更的回归约束，源 fin-buddy@5ecfd07）

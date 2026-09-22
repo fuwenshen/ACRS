@@ -2,10 +2,10 @@
 
 | 字段 | 值 |
 | --- | --- |
-| **Status** | Draft — Frozen Candidate |
-| **Version** | 0.1 |
+| **Status** | Frozen Candidate — 按节携带 Evidence Status（见 RFC-000B §2），整篇转 Frozen 须 §8 各判据均有实证 |
+| **Version** | 0.2（v0.1 + RFC-000B 协议应用：节级实证标注） |
 | **Created** | 2026-07-29 |
-| **Depends on** | RFC-000（Scope）、RFC-000A（Terminology, Frozen） |
+| **Depends on** | RFC-000（Scope）、RFC-000A（Terminology, Frozen）、RFC-000B（Admission Protocol, Active） |
 | **性质** | 本 RFC 写**状态契约（State Machine as Specification）**，不写 Prompt、不写 Scheduler 实现（见 RFC-000 §2.1）。 |
 
 > **本 RFC 冻结三层生命周期**：`Task` → `Agent Instance` → `Context`，以及它们之间的转换触发器（Spawn / Continue / Archive / Handoff Trigger）。
@@ -33,7 +33,7 @@ Context Lifecycle
 
 ---
 
-## 2. Task Lifecycle
+## 2. Task Lifecycle `[Derived — 骨架经 RI-BUGFIX-001 真实运行，状态边未逐条单项验证]`
 
 ```mermaid
 stateDiagram-v2
@@ -57,7 +57,7 @@ stateDiagram-v2
 
 ---
 
-## 3. Agent Instance Lifecycle
+## 3. Agent Instance Lifecycle `[Derived — §3.1 除外，见下]`
 
 ```mermaid
 stateDiagram-v2
@@ -76,7 +76,7 @@ stateDiagram-v2
 | **Waiting-Handoff** | 已产出，等 Orchestrator 收编 | **MUST NOT** 再改 Workspace（冻结产物，保证 Evidence 可核验）；回传只给 Handoff Package（含 Evidence 引用），**不回传对话** |
 | **Archived** | Context 已关闭 | Archived 后**不可**被"唤醒续用"——续做只能 Spawn 新实例（无 Context Refresh） |
 
-### 3.1 Archive 触发点（回答上一轮的开放问题）
+### 3.1 Archive 触发点（回答上一轮的开放问题） `[Validated @ RI-BUGFIX-002]`
 
 > **何时 Archive Backend#1？** —— 答案：**在它进入 Waiting-Handoff 且 Orchestrator 完成 Collect（登记其 Evidence 引用）之后立即 Archive。**
 
@@ -113,7 +113,7 @@ stateDiagram-v2
 
 ---
 
-## 5. 转换触发器：Spawn / Continue（Route 的两分支）
+## 5. 转换触发器：Spawn / Continue（Route 的两分支） `[Validated @ RI-BUGFIX-001 — A-2（Spawn=独立判断 MUST）、B-2（Orchestrator Context 不随 worker 数增长）两判据实测通过]`
 
 Orchestrator 在 **Orchestrator Cycle** 的 Route 步产出以下之一（承 RFC-000A）：
 
@@ -130,7 +130,7 @@ Orchestrator 在 **Orchestrator Cycle** 的 Route 步产出以下之一（承 RF
 
 ---
 
-## 6. Handoff Trigger：何时交接（WHEN）
+## 6. Handoff Trigger：何时交接（WHEN） `[Derived — 触发点 1/2 随生命周期骨架经 RI-001 运行；触发点 3（溢出续接）从未被真实触发，RI-BUGFIX-001 明确记录"任务太小未触发"]`
 
 > 本节只定 **WHEN**；Handoff Package 的**结构（WHAT）**归 RFC-002。
 
@@ -155,11 +155,11 @@ Handoff（跨 Context 状态转移）**只在**以下时刻发生，**没有第�
 
 一个实现要合规于 RFC-001，MUST 可观测地满足：
 
-1. 存在 task_id，且 Task 状态转换只走 §2 允许的边。
-2. 每个 Agent Instance 恰好 1 个 Context，Archived 后不可续用（可通过"是否存在唤醒旧 Context 的路径"证伪）。
-3. Waiting-Handoff 实例不再改 Workspace（产物冻结可核验）。
-4. Orchestrator Context 大小**不随** worker 数量单调增长（可测：跑 N 个 worker，Orchestrator Context 增量应仅为 Evidence Index 引用，而非产物内容）。
+1. 存在 task_id，且 Task 状态转换只走 §2 允许的边。`[Derived]`
+2. 每个 Agent Instance 恰好 1 个 Context，Archived 后不可续用（可通过"是否存在唤醒旧 Context 的路径"证伪）。`[Validated @ RI-BUGFIX-002 — REJECT 回环：Reviewer#1 判 REJECT 后 Spawn 全新 Worker#2，未唤醒 #1]`
+3. Waiting-Handoff 实例不再改 Workspace（产物冻结可核验）。`[Derived]`
+4. Orchestrator Context 大小**不随** worker 数量单调增长（可测：跑 N 个 worker，Orchestrator Context 增量应仅为 Evidence Index 引用，而非产物内容）。`[Validated @ RI-BUGFIX-001 — B-2]`
 
 ---
 
-*RFC-001 v0.1 — 待 Runtime Sequence Diagram 复核三层状态迁移后转 Frozen。*
+*RFC-001 v0.2 — Frozen Candidate。转 Frozen 前置条件：判据 1 / 3 各获 ≥1 次实证（判据 2 / 4 已达标）。原 v0.1 尾注"待 Runtime Sequence Diagram 复核"已由 RI-BUGFIX-001 生命周期骨架 A/B 全绿完成。*
