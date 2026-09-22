@@ -52,7 +52,7 @@
 - ⬜ ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。case-000 的 3 条 Core 候选（F-002→agent-contract §3 细则、F-003→RFC-001、F-004→agent-catalog）待后续 RFC 增补。
 - ⬜ ⑤ **Rule of Three**：同类内容真实重复 ≥3 次，才进入下一步。
 - ⬜ ⑥ **Skill Extraction**：把重复的 Prompt 抽成领域 Skill（Phase 4）。
-- 🟡 ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。case-000 已登记 3 个 benchmark 候选（评审注入污染 / 澄清前置 / SOLO vs 拆分链），待 harness。
+- 🟡 ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。case-000 已登记 3 个 benchmark 候选（评审注入污染 / 澄清前置 / SOLO vs 拆分链），待 harness。（harness 落地后的回归方法约束已预定义：`validation/README.md` §Harness 自身变更的回归约束，源 fin-buddy@5ecfd07）
 - 📌 **诚实边界**：真实项目跑不出干净 A/B，前期证据是**定性 findings 而非对照数字**；
   "ACRS 提高了成功率 X%" 这类结论要等 ⑦ Benchmark，别用 findings 预支。
 

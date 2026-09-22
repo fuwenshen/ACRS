@@ -83,6 +83,8 @@ rename 陷阱：跨文件改名单文件 build=0 不足证安全，须全仓查�
 
 **PASS_WITH_NITS 阻断语义（case-001#F-4）**：NIT 触碰冻结文档（design/api/db）断言确定性（如 DC 条目语义含糊、口径未定）→ 必修后方可派发；纯风格/命名类 NIT 放行记档。判不定算触碰（fail-closed）。
 
+**确认链落盘 + 交互预算（fin-buddy@5ecfd07）**：任何"用户已确认"MUST 有落盘记录（何时/问了什么/答了什么/消息引用）；长上下文里自我说服"已经确认过了"而无记录 = 未确认，闸门不放行。同一决策已在上游闸门获确认的，下游闸门 MUST 直接复用记录，禁止重复问用户（同一决策问 5 遍 = 交互预算失控）。
+
 **人工闸超时降级（case-001#F-3）**：问询工具（AskUserQuestion 类）超时无响应 → 降级为文本问询（选项+默认推荐+各自的后果一行）落盘后继续可推进的部分，不可推进的部分标 BLOCKED_等人；禁止整条流水线停摆干等。
 
 **五类未定项扫描**（G-CLARIFY 的证据生产，acrs-shared R10 的操作化）：
@@ -111,7 +113,7 @@ mode 选择：全量快且干净→full；测试慢/只改局部→scoped；**�
 ## 六、放行抽检（FAST_TRACK/SOLO 免全套评审时的兜底，秒级亲自做）
 
 1. **伪解**：diff 是搬家不改痛点 → 打回。
-2. **假绿**：测试真验证行为还是走 fallback/断言过弱 → 打回。
+2. **假绿**：测试真验证行为还是走 fallback/断言过弱 → 打回；绕过签名（skip 参数/吞错/删弱失败测试/缩范围绕红，acrs-shared R12）命中任何一种 → 同判打回。
 3. **越界**：diff 触 api/db/跨模块/冻结 → 升 STANDARD/FULL（git diff --name-only 比对边界）。
 4. **覆盖**：测试覆盖 diff 每个改动点 → 缺则打回。
 5. **连贯性（SOLO 专属）**：对着 Solo 回传的骨架+骨架偏差自检逐条看——流程顺否、分支/事件/边界全否、有无硬凑、偏差自检诚实否。存疑 → 正式触发 G-REVIEW 拉评审做连贯性专项。
@@ -138,7 +140,7 @@ mode 选择：全量快且干净→full；测试慢/只改局部→scoped；**�
 | 任意 | BLOCKED | 记 blocked_by，等依赖 |
 | 任意 | 同环节 retry>2 | ESCALATED（升人工，此后不得自行继续） |
 
-**判 DONE 前强制核对**：①定 mode 取证据；②接地不达标禁止 DONE；③核对 checklist_coverage + 勾对表（每个 DC-xx 有测试且"已实现"）；④全达标才 DONE。TRIVIAL/FAST_TRACK 免③；CONSULT/AUDIT/纯文档写 waiver_reason。
+**判 DONE 前强制核对**：①定 mode 取证据；②接地不达标禁止 DONE；③核对 checklist_coverage + 勾对表（每个 DC-xx 有测试且"已实现"）；④全达标才 DONE；⑤**收口复盘扫描**（fin-buddy@5ecfd07，非 TRIVIAL 适用）：本次 run 有无流程级教训 → 有则当场落一条 findings 候选（体系级进 validation/production，资产级进 FEEDBACK，按 `assets/README.md` 分工），确无则记 `none`——防 case-000 式回溯债（执行中不捕获，六周后只能事后补审）。TRIVIAL/FAST_TRACK 免③；CONSULT/AUDIT/纯文档写 waiver_reason。
 
 ## 八、子实例返回解析与派发故障（acrs-shared R13 的总控侧）
 

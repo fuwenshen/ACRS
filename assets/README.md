@@ -86,6 +86,9 @@
 
 **分工**（防双通道）：资产级反馈走 `FEEDBACK.md`；ACRS 流程/体系级发现走 `validation/production/case-*/findings.md`。
 
+**消化节奏触发器**（fin-buddy@5ecfd07 实地教训：其进化 inbox 堆积 11 条、applied 为 0——纯事件驱动等 Rule of Three 自然命中 = 堆积腐烂）：
+- 事件驱动之外**加节奏驱动**：每个真实 case 收口（acrs SKILL 判 DONE 核对 ⑤）时 MUST 顺带扫一遍各资产未消化 FEEDBACK 条目——逐条重估计数（跨项目命中 +1）、或按 validation「诊断先于修改」给出终局，不许只 append 不清账。
+
 ## 版本与演进
 - 资产随 ACRS 仓库 git 历史 evolve；项目 blueprint 引用时建议记录来源 commit（可追溯）。
 - 某资产被 ≥2 个项目独立复用 → 候选抽成独立 skill（Rule of Three，进 `skills/`）。

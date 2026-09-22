@@ -90,6 +90,11 @@ L4 Reference   reference/            真跑证据
   baseline（**new_failures=0**，存量失败不卡你，但你不能引入新失败）/ trivial（build=0+理由）/
   waiver（无代码任务+理由）。模式由派发者指定，执行者按模式回传。
 - **可执行应用（有 main/启动入口）加一档 boot smoke（case-001#F-5）**：build=0 只证编译不证能启动——接地证据 MUST 含最小启动冒烟（真实拉起 context / 健康端点探测，@Scheduled/监听器/连接池类启动即崩缺陷只有这层能暴露）。
+- **归因环境 MUST 附可复核证据**（fin-buddy@5ecfd07）：把失败归因于"环境限制"以豁免接地时，
+  MUST 同时出示证据（离线复跑输出/依赖缺失清单/坐标不可达日志）；无证据一律按真实缺陷打回，
+  禁止拿"环境"当免测理由。
+- **绕过即假绿**（fin-buddy@5ecfd07）：跳过参数（`-Dxxx.skip=true` 类）、`|| true`/`set +e` 吞错、
+  删除/弱化/加 skip 失败测试、缩小测试范围绕开已知红——任何一种命中，该证据不算接地达标。
 - **无退出码的"完成" = 违约。**
 
 ## R13. result 输出协议（来源：case-000#F-007，Convention 归层，Handoff Package 输出侧操作化）
