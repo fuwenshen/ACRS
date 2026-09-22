@@ -15,5 +15,9 @@ Core 只约束 WHAT：「Orchestrator 持引用、Boundary 解引用核验」。
 ## 一条引用的最小形状
 ```json
 { "task_id": "...", "kind": "test_log|patch|review",
-  "ref": "evidence/xxx.log", "exit_code": 0, "summary": "一行摘要" }
+  "ref": "evidence/xxx.log", "exit_code": 0, "summary": "一行摘要",
+  "coverage_boundary": { "covered": ["..."], "uncovered": ["鉴权切面", "序列化"] } }
 ```
+- `coverage_boundary`（case-003#F-004）：test_log 类引用附带——声明证据覆盖了什么、未覆盖什么；
+  被 mock 掉的框架路径归 uncovered 并列入待联调清单，禁止 test=0 隐式扩张为"所有运行时行为已验证"。
+  其他 kind 可省略。

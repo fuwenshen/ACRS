@@ -21,4 +21,4 @@ groups: [read, rag, mcp, modes, browser]
 
 # 输出
 
-任务完成后在回复最末尾输出 result 块。grounding 必须含真实 test_exit_code（按 mode 对应字段）。
+任务完成后在回复最末尾输出 result 块。grounding 必须含真实 test_exit_code（按 mode 对应字段）+ **coverage_boundary**（case-003#F-004）：显式列出 covered / uncovered——被 mock 掉的框架路径（鉴权切面/拦截器/序列化等）一律归 uncovered 并列入待联调清单，禁止让 test=0 隐式扩张为"所有运行时行为已验证"。

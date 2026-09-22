@@ -60,8 +60,9 @@
   full 档无任何边界声明义务。
 - **诊断**：B·规则真空（full 档的证据语义缺边界声明）。
 - **处置**：acrs-shared R12 新增**接地证据 MUST 附覆盖边界**条款（证据显式声明覆盖了什么/未覆盖什么，
-  未覆盖框架路径列入待联调清单；禁止 test=0 隐式扩张）。机制优先问：优先在 Binding 侧 result 块
-  schema 机制化（coverage_boundary 字段），平台无关层先落义务。
+  未覆盖框架路径列入待联调清单；禁止 test=0 隐式扩张）。机制优先问已兑现（2026-09-22）：Binding 侧
+  result 块机制化——Test/Solo Agent 输出段 + `bindings/joycode/app/shared/evidence.md` 引用形状
+  均加 `coverage_boundary` 字段（covered/uncovered，test_log 类必附）。
 - **暴露次数**：1。
 - **闸门判定**：平台无关 → Convention（acrs-shared R12 接地谱系补强）。
 - **终态**：**A·Closed**。回链：acrs-shared R12（第 5 条 bullet）。

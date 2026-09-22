@@ -22,4 +22,4 @@ groups: [read, rag, mcp, modes, browser]
 
 # 输出
 
-任务完成后在回复最末尾输出 result 块。grounding 必须含真实 build_exit_code + test_exit_code，末尾附骨架偏差自检。
+任务完成后在回复最末尾输出 result 块。grounding 必须含真实 build_exit_code + test_exit_code，末尾附骨架偏差自检 + **coverage_boundary**（case-003#F-004）：显式列出 covered / uncovered——被 mock 掉的框架路径（鉴权切面/拦截器/序列化等）一律归 uncovered 并列入待联调清单。
