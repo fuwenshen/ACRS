@@ -65,3 +65,15 @@
 - **暴露次数**：1（用户指出）。
 - **闸门判定**：平台无关——换任何机器 / 任何团队都犯 → Convention（文档协议层）。
 - **终态**：**A·Closed**（回链 validation/README 新规则 + 本 README 本体修正）。
+
+---
+
+## F-006 资产消费通路断在总控侧感知（用户问询暴露）
+
+- **现象**：用户问"项目里如何快速使用 payment 资产"。核查发现：`bin/acrs attach`（写 `.acrs/blueprint.md`）与资产 README"与 ACRS 对接"三条通路均已就位，但 acrs SKILL 无任何条款要求派发前读 blueprint 资产段——资产 README 的承诺（"总控派发时按 blueprint 注入"）在总控手册侧无对应 MUST，通路断链。
+- **根因**：资产协议（README）与总控协议（SKILL）双侧开发，case-001 F-001 落地资产侧时未同步点亮总控侧；blueprint 在 SKILL 中仅 environment 一处被引用。
+- **诊断**：B·规则真空（现有条款确实覆盖不到"注入包组装时读资产挂载"）。
+- **处置**：acrs SKILL §九 增补"派发前读 `.acrs/blueprint.md` 资产段"——按资产 README 场景表选文件注入（按需非全量）；MUST 拆进 DC 才为硬约束。
+- **暴露次数**：1（用户问询暴露，属体系自查——CONSULT 类问题的探查副产品）。
+- **闸门判定**：平台无关（blueprint 机制本身载体中立）→ Convention（skill 操作细则）。
+- **终态**：**A·Closed**。登记观察：下一个真实项目 attach 后的完整 run 验证"按场景表注入"是否真实发生（防 README 与 SKILL 再次双源不同步）。

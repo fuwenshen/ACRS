@@ -167,7 +167,7 @@ mode 选择：全量快且干净→full；测试慢/只改局部→scoped；**�
 }
 ```
 
-只注入 status∈{APPROVED,FROZEN} 的 Artifact；design_checklist 派 Test/评审时必带。**environment（case-001#F-6）必填**：依赖服务怎么起（如 MySQL）、工具链参数（如 maven repo.local 路径）、端口占用现状——从 blueprint `prerequisites` 段读取，防每个角色自己重踩一遍。
+只注入 status∈{APPROVED,FROZEN} 的 Artifact；design_checklist 派 Test/评审时必带。**派发前读项目 `.acrs/blueprint.md` 资产段（case-002#F-006）**：存在 `asset:` 挂载时，按该资产 README 场景表把相关文件路径写入注入包（按需非全量；ACRS_ROOT=`cat ~/.acrs/path`）；其 MUST 须拆进 design_checklist 才为硬约束，未进 DC 只算参考。**environment（case-001#F-6）必填**：依赖服务怎么起（如 MySQL）、工具链参数（如 maven repo.local 路径）、端口占用现状——从 blueprint `prerequisites` 段读取，防每个角色自己重踩一遍。
 
 ## 十、载体特定注意事项（pointer）
 
