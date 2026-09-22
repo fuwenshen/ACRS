@@ -11,7 +11,7 @@ ChatGPT 评审建议的九目录语义，按本仓库现状映射如下——**�
 | --- | --- | --- | --- |
 | 定义规范 | `RFC/` | 协议 RFC（Scope / Terminology / Runtime Lifecycle） | ✅ |
 | 稳定核心概念/Schema | `core/` | agent-catalog、agent-contract（含 INV-VERIFY） | ✅ |
-| 行为约束（conventions） | `skills/acrs-shared/` | 所有 Agent 必守的行为（R1–R13）——L2 Convention 层 | ✅ 由 Skill 承载 |
+| 行为约束（conventions） | `skills/acrs/acrs-shared/` | 所有 Agent 必守的行为（R1–R13）——L2 Convention 层 | ✅ 由 Skill 承载 |
 | 可加载能力 | `skills/` | acrs-architect / backend / critic / test / solo / orchestrator | ✅ |
 | 平台适配 | `bindings/` | 某平台怎么加载/执行 Skill（当前仅 joycode） | ✅ |
 | Reference Implementation | `reference/` | 各平台的参考实现 | ✅ |

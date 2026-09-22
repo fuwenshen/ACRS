@@ -106,39 +106,70 @@ EOF
   echo "[acrs] 消化规则：同一问题 ≥2 独立项目命中即行动（派生资产路由上游，原生资产直接改）"
 }
 
+sync_roots_for() {  # $1=binding 目录 → 两行输出: skills根 agents根；未声明的字段回退 ~/.agents/
+  local conf="$1/roots.conf" sk="$HOME/.agents/skills" ag="$HOME/.agents/agents" k v
+  if [[ -f "$conf" ]]; then
+    while IFS='=' read -r k v; do
+      k="${k// /}"; v="${v// /}"; v="${v/#\~/$HOME}"
+      [[ -z "$k" || -z "$v" || "$k" == \#* ]] && continue
+      case "$k" in skills) sk="$v" ;; agents) ag="$v" ;; esac
+    done < "$conf"
+  fi
+  printf '%s\n%s\n' "$sk" "$ag"
+}
+
 cmd_sync() {
-  local root
+  local root carrier b roots sk_dir ag_dir n=0 updated=0 series sname dir name f base
   root=$(cmd_path)
-  local sk_dir="$HOME/.joycode/skills" ag_dir="$HOME/.joycode/agents"
-  mkdir -p "$sk_dir" "$ag_dir"
-  local n=0 updated=0 name f base
-  echo "[acrs] 同步 ACRS-native Skills → $sk_dir"
-  for dir in "$root"/skills/*/; do
-    name=$(basename "$dir")
-    case "$name" in acrs*) ;; *) continue ;; esac
-    n=$((n+1))
-    if [[ -d "$sk_dir/$name" ]] && diff -rq "${dir%/}" "$sk_dir/$name" >/dev/null 2>&1; then
-      echo "  = ${name}（已一致）"
-    else
-      rm -rf "$sk_dir/$name" && cp -R "${dir%/}" "$sk_dir/$name"
-      echo "  ↑ ${name}（已更新）"
-      updated=$((updated+1))
-    fi
+  for b in "$root"/bindings/*/; do
+    [[ -d "${b%/}/agents" ]] || continue
+    carrier=$(basename "${b%/}")
+    roots=$(sync_roots_for "${b%/}")
+    sk_dir=$(sed -n 1p <<<"$roots"); ag_dir=$(sed -n 2p <<<"$roots")
+    mkdir -p "$sk_dir" "$ag_dir"
+    echo "[acrs] [$carrier] skills → ${sk_dir}（skills/<系列>/<skill>/；acrs 系=native 强制同步，其余系列冲突不覆盖）"
+    for series in "$root"/skills/*/; do
+      sname=$(basename "$series")
+      for dir in "$series"*/; do
+        [[ -d "$dir" ]] || continue
+        name=$(basename "$dir"); n=$((n+1))
+        if [[ "$sname" == "acrs" ]]; then
+          if [[ -d "$sk_dir/$name" ]] && diff -rq "${dir%/}" "$sk_dir/$name" >/dev/null 2>&1; then
+            echo "  = ${name}（已一致）"
+          else
+            rm -rf "$sk_dir/$name" && cp -R "${dir%/}" "$sk_dir/$name"
+            echo "  ↑ ${name}（native，已更新）"
+            updated=$((updated+1))
+          fi
+        else
+          if [[ -d "$sk_dir/$name" ]]; then
+            if diff -rq "${dir%/}" "$sk_dir/$name" >/dev/null 2>&1; then
+              echo "  = ${name}（已一致）"
+            else
+              echo "  ! ${name}（${sname} 系扩展：目标已存在且内容不同，跳过——个人配置优先）"
+            fi
+          else
+            cp -R "${dir%/}" "$sk_dir/$name"
+            echo "  ↑ ${name}（${sname} 系扩展，新装）"
+            updated=$((updated+1))
+          fi
+        fi
+      done
+    done
+    echo "[acrs] [$carrier] agent 入口 → $ag_dir"
+    for f in "${b%/}"/agents/*.md; do
+      [[ -f "$f" ]] || continue
+      base=$(basename "$f"); n=$((n+1))
+      if [[ -f "$ag_dir/$base" ]] && diff -q "$f" "$ag_dir/$base" >/dev/null 2>&1; then
+        echo "  = ${base}（已一致）"
+      else
+        cp "$f" "$ag_dir/$base"
+        echo "  ↑ ${base}（已更新）"
+        updated=$((updated+1))
+      fi
+    done
   done
-  echo "[acrs] 同步 Agent 入口 → $ag_dir"
-  for f in "$root"/bindings/joycode/agents/*.md; do
-    [[ -f "$f" ]] || continue
-    base=$(basename "$f")
-    n=$((n+1))
-    if [[ -f "$ag_dir/$base" ]] && diff -q "$f" "$ag_dir/$base" >/dev/null 2>&1; then
-      echo "  = ${base}（已一致）"
-    else
-      cp "$f" "$ag_dir/$base"
-      echo "  ↑ ${base}（已更新）"
-      updated=$((updated+1))
-    fi
-  done
-  echo "[acrs] 完成：${n} 项检查，${updated} 项更新（源=仓库本体，部署副本只读消费；漂移=单向以仓库为准）"
+  echo "[acrs] 完成：${n} 项检查，${updated} 项更新（acrs 系=native 单向仓库为准；其他系列冲突不覆盖）"
 }
 
 case "${1:-}" in

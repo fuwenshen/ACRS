@@ -65,7 +65,7 @@ root-prompt.md（已内联 acrs-shared）
 ```
 Backend Agent
    ↓  on_init:  ← 真实存在于 backend/agent.md
-        - skills/acrs-shared     （MANDATORY）
+        - skills/acrs/acrs-shared（MANDATORY）
         - skills/backend-java    （按需，尚未建）
    ↓
 开始任务

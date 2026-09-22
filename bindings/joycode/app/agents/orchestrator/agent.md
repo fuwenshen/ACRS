@@ -7,7 +7,7 @@ kind: coordinator
 context_rule: 1 实例 = 1 Context（RFC-000A）
 routing: explicit           # 显式指定 subagent_type，见 ../../conventions.md §1
 on_init:                    # 启动必加载（MANDATORY）
-  - skills/acrs-shared      # 扛 R2/R3/R4/R7/R8：Handoff/Evidence/Done Gate/Spawn/Archive
+  - skills/acrs/acrs-shared  # 扛 R2/R3/R4/R7/R8：Handoff/Evidence/Done Gate/Spawn/Archive
 ```
 
 > Orchestrator **不是** Agent（RFC-000A）：它不做 Plan/Act/Verify，只做 Route。

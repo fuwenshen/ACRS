@@ -6,7 +6,7 @@ implements: core/agent-catalog#reviewer   # INV-VERIFY 独立验证者的一个�
 kind: agent
 context_rule: 1 实例 = 1 Context（RFC-000A）
 on_init:                                  # 启动必加载（MANDATORY）
-  - skills/acrs-shared                    # 尤其扛 R5 INV-VERIFY：独立重取信号、敢 REJECT
+  - skills/acrs/acrs-shared                  # 尤其扛 R5 INV-VERIFY：独立重取信号、敢 REJECT
   # 领域 Skill 按需追加（须已真实存在于 skills/，P9 禁预建）
 ```
 

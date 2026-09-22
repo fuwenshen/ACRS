@@ -6,7 +6,7 @@
 
 > 每个子目录是一个 Agent 的 **Binding bundle**，复制 `_template/` 生成。
 > **入口 = 薄 Agent，能力 = Skill**：Agent 只留"身份 + 路由权限 + `on_init` 加载哪些 Skill"，
-> 其余全在 `../../skills/` 里。每个 Agent 的 `on_init` **MUST** 加载 `skills/acrs-shared`（扛 Core 不变量）。
+> 其余全在 `../../skills/acrs/` 里。每个 Agent 的 `on_init` **MUST** 加载 `skills/acrs/acrs-shared`（扛 Core 不变量）。
 
 ## 已建（MVP 链路所需）
 | 目录 | 渲染的 Core 契约 | on_init 加载 | 状态 |

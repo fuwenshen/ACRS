@@ -38,7 +38,7 @@ ACRS 的 RI-001/002 都是在这里真跑出来的。
 1. 打开你的项目，启动 JoyCode CLI。
 2. 把 [`bindings/joycode/cli/root-prompt.md`](../bindings/joycode/cli/root-prompt.md) 的内容作为会话的根提示词
    （它内联了 acrs-shared 的**核心行为**：Route/Spawn/INV-VERIFY/Done Gate/溢出续接；
-   非全量——R10–R13 未入，完整版以 [`skills/acrs-shared/SKILL.md`](../skills/acrs-shared/SKILL.md) 为准）。
+   非全量——R10–R13 未入，完整版以 [`skills/acrs/acrs-shared/SKILL.md`](../skills/acrs/acrs-shared/SKILL.md) 为准）。
 3. 直接给任务，例如"修复 XXX 这个 bug"。根提示词会让单个 Context 扮演
    Orchestrator → Backend → Review 的行为，REJECT 后 Spawn 新实例重来。
 4. 完成时你会拿到：改动 diff + 测试退出码 + review 结论——都是可核对的**证据引用**，不是"我觉得好了"。

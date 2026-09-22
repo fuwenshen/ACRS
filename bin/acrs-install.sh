@@ -97,7 +97,7 @@ copy_into() {
 
 # --- 公共产物：所有平台都要（Convention 是地基）---
 step "① 安装公共产物到 .acrs/"
-copy_into "skills/acrs-shared" "skills/acrs-shared"
+copy_into "skills/acrs/acrs-shared" "skills/acrs-shared"
 copy_into "docs/mental-model.md" "docs/mental-model.md"
 copy_into "docs/bootstrap.md"    "docs/bootstrap.md"
 copy_into "docs/quick-start.md"  "docs/quick-start.md"

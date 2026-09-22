@@ -20,12 +20,12 @@
 
 | 源（仓库） | 目标（部署） | 内容 |
 | --- | --- | --- |
-| `skills/acrs-*`（7 件） | `~/.joycode/skills/acrs-*` | ACRS 能力资产（shared + 6 角色） |
+| `skills/acrs/*`（7 件） | `~/.joycode/skills/acrs-*` | ACRS 能力资产（shared + 6 角色） |
 | `bindings/joycode/agents/ACRS *.md`（6 个） | `~/.joycode/agents/` | JoyCode 入口 Agent（薄壳：identity + 红线 + Skill 加载指示） |
 
 ```bash
-# 同步（幂等，可直接重复执行）：
-cp -R skills/acrs-* ~/.joycode/skills/
+# 同步（幂等，可直接重复执行；或用仓库根 bin/acrs sync，支持多载体 roots.conf）：
+cp -R skills/acrs/*/ ~/.joycode/skills/
 cp bindings/joycode/agents/ACRS\ *.md ~/.joycode/agents/
 ```
 

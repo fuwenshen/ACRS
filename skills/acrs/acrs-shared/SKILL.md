@@ -106,7 +106,7 @@ L4 Reference   reference/            真跑证据
 Backend Agent（入口，几十行）
   identity   : 我是 backend（渲染 core#worker）
   routing    : 我可 Spawn 哪些 agent_type
-  on-init    : MUST Load skills/acrs-shared   ← 扛 R1–R13（Core 不变量 + 过闸 Convention）
+  on-init    : MUST Load acrs-shared（skills/acrs/acrs-shared）← 扛 R1–R13（Core 不变量 + 过闸 Convention）
                Load skills/backend-java        ← 领域能力（Spring/MyBatis/DDD）
 ```
 

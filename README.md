@@ -50,7 +50,7 @@ ACRS 的终态不是"设计得漂亮"，而是——**开发者几乎感觉不�
 | 层 | 位置 | 是什么 |
 | --- | --- | --- |
 | **L1 Core** | `RFC/` `core/` | 协议与不变量（含 INV-VERIFY）。改动需 RI 实证。 |
-| **L2 Convention** | `skills/acrs-shared/` | 所有 Agent 必守的行为，平台无关。 |
+| **L2 Convention** | `skills/acrs/acrs-shared/` | 所有 Agent 必守的行为，平台无关。 |
 | **L3 Binding** | `bindings/joycode/{app,cli}/` | 平台入口载体——Skill 怎么被该平台加载/执行（当前只做了 JoyCode）。 |
 | **L4 Validation** | `validation/` `reference/` | 真实/可复现地跑，证明它有用。 |
 
