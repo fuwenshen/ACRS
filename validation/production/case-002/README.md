@@ -1,8 +1,10 @@
 # case-002 — fin-buddy 机制首轮吸收归档
 
 > **证据等级：外部观察（External Observation）**。非 ACRS 生产事故：借鉴机制来自 fin-buddy
-> （`/Users/fuwenshen.168/vincent/aipod/fin-buddy` @5ecfd07）实地研读，其防的故障模式在该体系
-> 真实存在（含其进化 inbox 堆积 11 条、applied 为 0 的失败观察）。吸收一律过 P8 三问 + 来源标注。
+> （java-dongboot 部门级 harness 仓库）@5ecfd07 的 evolution/ workflow/ guardrails/ 实地研读，
+> 其防的故障模式在该体系真实存在（含其进化 inbox 堆积 11 条、applied 为 0 的失败观察）。
+> 源仓库不随 ACRS 分发，本规则集自包含可执行；本机克隆位置属维护者本地指针（memory / `~/.acrs/`），不入库。
+> 吸收一律过 P8 三问 + 来源标注。
 
 ## 背景
 
