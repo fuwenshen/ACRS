@@ -81,6 +81,7 @@ P8 契约级？ → Evidence 可解引用？ → 平台无关 WHAT？ → Core b
 | F-002 评审喂答案污染 | 2 | acrs-shared R5 等 | agent-contract §3 | Pending（待协议经一次真实闭环验证后逐条 Review） |
 | F-003 需求没问清白做 | 2 | acrs-shared R10 等 | RFC-001 | Pending（同上） |
 | F-004 bugfix 拆分链修不到位 | 2 | acrs-orchestrator 连贯性密度 | agent-catalog | Pending（同上） |
+| case-004#F-001 系统边界输入验证缺失（source 校验遗漏致脏数据不可自愈） | 1（深度证据：代码+集成测试复现+不可自愈闭环） | 项目侧修复；Convention 侧暂无固化（G-CLARIFY 五类扫描含边界但未操作化到此粒度） | 待 Review 定位（候选 agent-contract / 校验不变量） | Pending（**首个真实闭环产生的候选**，未达 ≥2 门槛，按证据质量登记；Admission Review 时独立判定） |
 
 ---
 
