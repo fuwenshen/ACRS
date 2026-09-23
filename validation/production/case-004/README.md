@@ -12,6 +12,15 @@
   asset/ 残留目录 → 清理收编，未盲目重派（协议从纪律变成实测正例）。
 - **确认链落盘**：DongBoot parent → spring-boot-starter-parent 替换经查证（内网制品不全）+ 用户批准 + spec §6 声明。
 - **REJECT 回退链**：Critic 拦下 BLOCKER（source 校验遗漏）→ Backend 修复 → 复审翻绿，错误沿依赖正确回流。
+- **需求边界控制正例**：需求"零新增基础设施"被严格执行——8 模块 DDD 工程 + H2，未自行引入 MQ/Redis/新服务/新状态中心。
+
+## RFC-000B 首次真实运行定性（外部评审校准，2026-09-22）
+
+**PASS WITH CALIBRATION**：首次真实闭环完成——Candidate 识别 ✅ / Evidence 收集 ✅ / Findings 分类 ✅ /
+Admission 流程触发 ✅；**Core Candidate 判定边界待校准**（以 B-1 Admission Review 实测：RFC-000B 能否
+对"单项目工程 Bug vs 项目级 Convention vs Binding vs 跨项目架构不变量"给出稳定、可复现的分类结果）。
+注意：P8/RFC-000B §4"有资格 ≠ 现在就进"已在协议中生效（B-1 仅登记 Pending 未晋升），无需修协议；
+校准点是**Review 尺度**，不是协议缺陷。
 
 ## findings 清单
 见 `findings.md`（7 条：1 Core Candidate + 2 Convention + 1 Binding + 2 Usage + 1 琐碎）。

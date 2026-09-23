@@ -54,6 +54,7 @@
 - 🟢 ②′ **case-004 完成（2026-09-22，F04 资产三步接入）**：STANDARD Feature 全链含真实回退闭环（Critic BLOCKER→修复→复审翻绿）；产出首条真实闭环 Core Candidate（case-004#F-001，已登记 RFC-000B §5 Pending）；体系正例 3 项——case-003#F-004 覆盖边界声明首次生效、case-001#F-003 派发故障协议第 2 次暴露且正确执行、确认链落盘（parent 替换批准+spec 声明）；Case Run Ledger 首账落地（5 派发/1 REJECT/1 返工/2 人工，脏数据缺陷上线前被拦）。台账：`validation/production/case-004/`。
 - 🟡 ③ **Findings 分类闸门**：每条 Finding 先归 Core / Convention / Binding / Usage(DX)，**再决定改不改**（防 Core 被平台问题污染，见 `validation/README.md`）。case-000 已首次走闸门（回溯补审）。
 - 🟡 ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。case-000 的 3 条 Core 候选（F-002→agent-contract §3 细则、F-003→RFC-001、F-004→agent-catalog）已登记于 RFC-000B §5 Pending——**待协议经一次真实闭环验证后逐条 Admission Review，不默认批量晋升**。
+  **启动条件已满足（2026-09-22）**：case-004 即"一次真实闭环"——RFC-000B 首次真实运行定性 **PASS WITH CALIBRATION**（Candidate 识别/Evidence/分类/流程触发全通，判定尺度待校准）。**下一步：对 4 条 Pending（case-000×3 + case-004#F-001/B-1）做 Admission Review，双重目的**——① 逐条独立判定 Admitted/Deferred/Rejected（Deferred 必须写明触发条件）；② 校准 RFC-000B 自身判定尺度（实测能否对"单项目 Bug vs Convention vs Binding vs 跨项目不变量"给出稳定、可复现的分类）。评审独立性：产出 findings 的实例不得单方拍板（RFC-000B §3）。
 - ⬜ ⑤ **Rule of Three**：同类内容真实重复 ≥3 次，才进入下一步。
 - ⬜ ⑥ **Skill Extraction**：把重复的 Prompt 抽成领域 Skill（Phase 4）。
 - 🟡 ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。case-000 已登记 3 个 benchmark 候选（评审注入污染 / 澄清前置 / SOLO vs 拆分链），待 harness。（harness 落地后的回归方法约束已预定义：`validation/README.md` §Harness 自身变更的回归约束，源 fin-buddy@5ecfd07）
