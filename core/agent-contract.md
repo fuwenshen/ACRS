@@ -1,9 +1,9 @@
 # ACRS Core — Agent Contract（Agent 契约 Schema）
 
 > **Layer**: Core（平台无关）。
-> **Status**: Draft v0.1。
+> **Status**: Draft v0.2。
 > **依赖**: RFC-000A（术语）、RFC-001（Runtime Lifecycle）。
-> **验证依据**: RI-BUGFIX-001（findings A-1 / A-2 / B-1）。
+> **验证依据**: RI-BUGFIX-001（findings A-1 / A-2 / B-1）；case-000#F-002（Admission Review 2026-09-23，`docs/review/2026-09-23-core-admission-review.md`）。
 
 本文件回答一个、且只回答一个问题：
 
@@ -73,8 +73,8 @@ Agent Type **MUST NOT** 携带：模型选择、Prompt 全文、Skill 加载清�
 
 ## 3. Core 不变量：独立验证者（The Independent Verifier）
 
-这是 Core 里**唯一**关于"多 Agent 如何组合"的强制条款。其余组合方式（几个 Agent、什么顺序）
-都是 Workflow 选择。
+这是 Core 关于"多 Agent 协作"的全部强制条款（INV-VERIFY + INV-INPUT）。其余组合方式
+（几个 Agent、什么顺序）都是 Workflow 选择。
 
 > **INV-VERIFY（MUST）**：产出某项 Evidence 的 Agent Instance，
 > **MUST NOT** 是对该 Evidence 做验收判定的 Agent Instance。
@@ -87,6 +87,16 @@ Agent Type **MUST NOT** 携带：模型选择、Prompt 全文、Skill 加载清�
 
 **这条不变量约束的是"隔离与独立取证"，不约束"验证者叫什么"**。
 它可以是 Reviewer、可以是 Test Agent、可以是一次独立的 CI ——具体是谁，属 Binding/Workflow。
+
+> **INV-INPUT（MUST）**：验证者实例的输入（Handoff Package）**MUST NOT** 携带任何
+> 关于被验产物的上游验收结论（"已确认 / 全部落地"类断言）；上游的倾向性观察只能以
+> **待核验清单**形态进入，验证者一律按待验证假设处理。
+>
+> **为什么升 MUST**：case-000#F-002（评审喂答案污染，2 次独立暴露）+ RI-BUGFIX-002 CLI
+> 弱隔离旁证（`reference/joycode/bugfix-reject/cli-binding/PORTABILITY.md`：验证者记忆含
+> 产出者全部改动时盲验退化）——验证者输入被污染时，INV-VERIFY 的隔离形同虚设。
+> 经 RFC-000B Admission Review（2026-09-23）Admitted。操作形态（如何措辞任务书、倾向
+> 如何转待核验清单）留在 Convention（acrs-shared R5 / acrs-critic §〇），不随迁。
 
 ### 3.1 与 Boundary 的关系
 
@@ -105,6 +115,7 @@ INV-VERIFY 保证"存在一个独立验证者"；Boundary（Done Gate，见 RFC-
 2. 至少存在一对 (producer, verifier) 满足 §3 INV-VERIFY，且它们是**不同 Instance / 不同 Context**。
 3. 不存在"某 Agent 既产出又对自己产出做终审判定"的路径——若存在，即违反 INV-VERIFY。
 4. Core 层文档中**不出现**具体角色作为强制项；具体角色只出现在 Catalog / Binding。
+5. 验证者实例的输入包**不含**上游验收结论性断言——存在即证伪（INV-INPUT）。
 
 > 判据 4 是本文件的自检：如果哪天有人往 Core 里加了 `Architect MUST ...`，
 > 就是又把流水线焊死了——RI-001 的 A-1 就是用来提醒这件事的实证。

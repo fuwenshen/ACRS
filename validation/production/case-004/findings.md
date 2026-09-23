@@ -14,7 +14,16 @@
   证据链完整（代码证据 + 集成测试复现 + 不可自愈闭环推演），质量达 RI 级。
 - **处置**：**不修 Core、不修 RFC**（本工程已修复）。登记 RFC-000B §5 Pending（独立暴露 1 次，未达
   ≥2 门槛，按单次深度证据登记，待 Admission Review 独立判定 Admitted/Deferred/Rejected）。
-- **终态**：Pending（首条来自真实闭环的 Core Candidate，也是 RFC-000B 首次被真实使用的试金石）。
+- **Admission Review 终判（2026-09-23，报告 `docs/review/2026-09-23-core-admission-review.md`）**：
+  **Rejected**——缺陷本体是工程实现缺陷（业务代码漏字段校验）非多 Agent 协作契约缺失（先例
+  case-001#F-001 判例）；全链是体系护栏实测成功（Critic 拦截 BLOCKER + 回退链正确回流 = 协议在工作，
+  非协议缺失证据）；拟议"系统边界"与 Core 既有 Boundary（Done Gate）同名异义，违反 RFC-000A 术语纪律。
+- **去向**：① 回落 Convention——acrs-architect design_checklist 指南增补 + acrs-critic 设计清单 5
+  敏感域扩展（"对外契约/系统边界输入，每入参必须有校验/拒绝语义的 DC 条目"），随本次收编；
+  ② 登记 **benchmark planted defect 候选**（缺校验字段 → 脏数据不可自愈，测 Critic 抓出率，与
+  case-000 F-002 benchmark 候选同构）——深度证据的正确去向。
+- **终态**：**A·Closed（Rejected-from-Core）**（若 Convention 固化后同类缺陷仍双漏检且第 2 次独立
+  暴露，以新证据重开分类闸门，不复活本条）。
 
 ---
 

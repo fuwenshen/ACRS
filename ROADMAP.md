@@ -51,10 +51,14 @@
 - 🟢 ②‴ **资产层落地（2026-09-21）**：`assets/`（跨项目工程标准，首份 payment/java-backend-guardrails 脱敏自 fin-buddy@676aab9）+ 团队接入入口（根 `install.sh` 写 `~/.acrs/path` 指针 + `bin/acrs` init/path/assets/attach/feedback）+ 自我进化反哺闭环（每资产 `FEEDBACK.md` append-only 记录 → Rule of Three 消化：派生资产路由上游改源、原生资产直接改）。协议见 `assets/README.md`。**定位：资产层是 Phase 4 Extraction 的前置实验田**（资产被 ≥2 项目复用 → 候选抽 skill），不新增 Core 概念。
 - ⬜ ② **真实项目连续使用**：在真实 Java 后端项目里用 **ACRS-native Skills** 做真实任务，产出定性 **Findings**（Production 线，case-001 起）。**现成首跑场景：资产三步接入（attach → 注入包携带 → DC 条目化 → Critic 勾对）。**
   **任务类型轮换（2026-09-22 立，外部评审建议收编）**：连续 case 刻意轮换 entry_type，防同型任务过拟合验证——case-001/case-004 已覆盖 Feature 全链（含 REJECT→设计修订→返工→复审翻绿），后续优先补：BugFix 快道（验 SOLO/FAST_TRACK 手感与 G-CLARIFY 探针）、Refactor（验回归纪律 baseline 模式）、跨模块/对外接口任务（验 case-003 对照组条款点火）。禁连续 2 个 case 同型（case-004 先于本规则落跑，不计违；case-005 起执行）。
-- 🟢 ②′ **case-004 完成（2026-09-22，F04 资产三步接入）**：STANDARD Feature 全链含真实回退闭环（Critic BLOCKER→修复→复审翻绿）；产出首条真实闭环 Core Candidate（case-004#F-001，已登记 RFC-000B §5 Pending）；体系正例 3 项——case-003#F-004 覆盖边界声明首次生效、case-001#F-003 派发故障协议第 2 次暴露且正确执行、确认链落盘（parent 替换批准+spec 声明）；Case Run Ledger 首账落地（5 派发/1 REJECT/1 返工/2 人工，脏数据缺陷上线前被拦）。台账：`validation/production/case-004/`。
+- 🟢 ②′ **case-004 完成（2026-09-22，F04 资产三步接入）**：STANDARD Feature 全链含真实回退闭环（Critic BLOCKER→修复→复审翻绿）；产出首条真实闭环 Core Candidate（case-004#F-001，Admission 终判 Rejected 回落 Convention，见 ④）；体系正例 3 项——case-003#F-004 覆盖边界声明首次生效、case-001#F-003 派发故障协议第 2 次暴露且正确执行、确认链落盘（parent 替换批准+spec 声明）；Case Run Ledger 首账落地（5 派发/1 REJECT/1 返工/2 人工，脏数据缺陷上线前被拦）。台账：`validation/production/case-004/`。
 - 🟡 ③ **Findings 分类闸门**：每条 Finding 先归 Core / Convention / Binding / Usage(DX)，**再决定改不改**（防 Core 被平台问题污染，见 `validation/README.md`）。case-000 已首次走闸门（回溯补审）。
-- 🟡 ④ **据分类倒逼规范**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。case-000 的 3 条 Core 候选（F-002→agent-contract §3 细则、F-003→RFC-001、F-004→agent-catalog）已登记于 RFC-000B §5 Pending——**待协议经一次真实闭环验证后逐条 Admission Review，不默认批量晋升**。
-  **启动条件已满足（2026-09-22）**：case-004 即"一次真实闭环"——RFC-000B 首次真实运行定性 **PASS WITH CALIBRATION**（Candidate 识别/Evidence/分类/流程触发全通，判定尺度待校准）。**下一步：对 4 条 Pending（case-000×3 + case-004#F-001/B-1）做 Admission Review，双重目的**——① 逐条独立判定 Admitted/Deferred/Rejected（Deferred 必须写明触发条件）；② 校准 RFC-000B 自身判定尺度（实测能否对"单项目 Bug vs Convention vs Binding vs 跨项目不变量"给出稳定、可复现的分类）。评审独立性：产出 findings 的实例不得单方拍板（RFC-000B §3）。
+- 🟢 ④ **据分类倒逼规范 + 首次 Admission Review 完成（2026-09-23）**：哪层的问题改哪层，Core 改动门槛最高（须证明"换任何平台都会犯"）。RFC-000B 首次真实运行（verdict **PASS_WITH_NITS**，报告 `docs/review/2026-09-23-core-admission-review.md`，评审者独立实例）四条候选全部三态收口、无一 BLOCKED：
+  - **case-000#F-002 评审喂答案污染 → Admitted**：INV-INPUT 落 `core/agent-contract.md` §3 + §4 判据 5（Draft v0.1→v0.2）——Core 首次经协议化 Admission 增补；
+  - **case-000#F-003 需求没问清 → Deferred**：独立暴露复核实为 1（通则确认≠独立暴露，口径判例已落 validation/README）；触发 = 再独立暴露 1 次或 benchmark 候选落地复现；
+  - **case-000#F-004 bugfix 拆分链 → Deferred**：五步 1–4 预审通过，唯一阻断 = agent-catalog 自我声明不承载 MUST；触发 = RFC-003（Loop Convention）立项时一级输入并入；
+  - **case-004#F-001 系统边界输入缺失 → Rejected**：工程缺陷非协作契约缺失（拦截成功=协议在工作）；回落 Convention（acrs-architect checklist 硬格式第 5 条 + acrs-critic 清单 7 逐入参核对，已随本次收编）+ benchmark planted defect 候选登记。
+  **协议校准三建议（择期走 RFC-000B 修订闸门，不默认生效）**：①"独立暴露"口径定义补入协议；② 第 4 步后增"落点核验"子步；③ 单次深证据候选默认路由显式写为 benchmark 登记。
 - ⬜ ⑤ **Rule of Three**：同类内容真实重复 ≥3 次，才进入下一步。
 - ⬜ ⑥ **Skill Extraction**：把重复的 Prompt 抽成领域 Skill（Phase 4）。
 - 🟡 ⑦ **Benchmark**：真实反复问题脱敏成可复现 case（带确定性 oracle），此时才做定量 metrics 与开关对照。case-000 已登记 3 个 benchmark 候选（评审注入污染 / 澄清前置 / SOLO vs 拆分链），待 harness。（harness 落地后的回归方法约束已预定义：`validation/README.md` §Harness 自身变更的回归约束，源 fin-buddy@5ecfd07）

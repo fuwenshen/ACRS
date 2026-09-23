@@ -74,14 +74,14 @@ P8 契约级？ → Evidence 可解引用？ → 平台无关 WHAT？ → Core b
 4. **RFC 不吸收 HOW**——五类扫描 / grilling / 探针等操作细节永远留在 Convention 层（P-3 违者即胖 Spec 复活）。
 
 ---
-## 5. 当前 Pending 登记
+## 5. Admission 决策登记（首次 Review 完成 2026-09-23，报告 `docs/review/2026-09-23-core-admission-review.md`，评审者独立实例）
 
 | Finding | 独立暴露 | Convention 固化位置 | 目标 RFC | Core 决策 |
 | --- | --- | --- | --- | --- |
-| F-002 评审喂答案污染 | 2 | acrs-shared R5 等 | agent-contract §3 | Pending（待协议经一次真实闭环验证后逐条 Review） |
-| F-003 需求没问清白做 | 2 | acrs-shared R10 等 | RFC-001 | Pending（同上） |
-| F-004 bugfix 拆分链修不到位 | 2 | acrs-orchestrator 连贯性密度 | agent-catalog | Pending（同上） |
-| case-004#F-001 系统边界输入验证缺失（source 校验遗漏致脏数据不可自愈） | 1（深度证据：代码+集成测试复现+不可自愈闭环） | 项目侧修复；Convention 侧暂无固化（G-CLARIFY 五类扫描含边界但未操作化到此粒度） | 待 Review 定位（候选 agent-contract / 校验不变量） | Pending（**首个真实闭环产生的候选**，未达 ≥2 门槛，按证据质量登记；Admission Review 时独立判定） |
+| F-002 评审喂答案污染 | 2（case-000 回溯 + PORTABILITY 独立实测） | acrs-shared R5 等 | agent-contract §3 | **Admitted（2026-09-23）**：INV-INPUT 落 `core/agent-contract.md` §3 + §4 判据 5（v0.2）；五步全过，注入侧义务属规则真空 |
+| F-003 需求没问清白做 | 复检实为 1（通则确认≠独立暴露，口径判例已记 validation/README） | acrs-shared R10（四 case 真实执行无违反） | RFC-001 | **Deferred（2026-09-23）**：触发 = ①再独立暴露 1 次澄清缺失致白做/返工（在线留痕）②已登记 benchmark 候选落地复现 |
+| F-004 bugfix 拆分链修不到位 | 2（case-000 + RI-001 独立实验，证据质量最佳） | acrs-orchestrator 连贯性密度 + acrs-solo | agent-catalog（不可承载，自我声明非强制） | **Deferred（2026-09-23）**：五步 1–4 预审通过，唯一阻断=落点承载能力；触发 = RFC-003（Loop Convention）立项时作为一级输入并入；改 catalog 地位须另走 RFC |
+| case-004#F-001 系统边界输入验证缺失 | 1 | 回落 Convention（acrs-architect checklist 指南 + acrs-critic 敏感域扩展） | 无（不进 Core） | **Rejected（2026-09-23）**：缺陷本体是工程缺陷非协作契约缺失（体系拦截成功 = 协议在工作，非协议缺失证据；先例 case-001#F-001 判例）；"系统边界"与 Core 既有 Boundary 同名异义违反 RFC-000A；benchmark planted defect 候选已记 case-004 findings |
 
 ---
 
