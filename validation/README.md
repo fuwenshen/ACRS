@@ -65,6 +65,12 @@
 - 禁止用与拟改动直接相关的临时任务凑对比数据（防既当运动员又当裁判员）。
 > 本约束在 benchmark harness 落地（ROADMAP ⑦）后生效；此前此类改动按 findings 管道记录留痕。
 
+## Case Run Ledger（运行账，case 收口必填；外部评审建议收编，2026-09-22）
+每个 production case 归档时，findings.md 末尾**顺手**记一行运行账——回答"ACRS 是在增加流程成本，还是降低错误成本"的证据基础。**性质：定性台账非 Benchmark 对照**（不违反诚实边界，不产出"提升 X%"结论——那是 ⑦ Benchmark 的事）。
+- **记录字段**（能得几项记几项，缺就标 n/a，禁事后编造）：Agent 派发次数 / 人工介入次数 / REJECT 数 / 返工轮数 / 重跑次数 / 复现端到端失败的回退链数（有无沿依赖正确回流）/ 大致 token 量级。
+- **用途**：跨 case 看趋势（错误是否被更早抓住 / 流程开销是否可接受），尤其对比"错误成本被省下的地方"（如 REJECT 回退避免了多大返工）。
+- **纪律**：一行账 ≤10 分钟成本；不为记账而打断执行——执行结束后从对话/日志回溯即可。
+
 ## Finding 的两个终局（防 findings/ 沦为无人再看的坟场）
 > 规则：**Every production finding must either disappear or become a benchmark.**
 > 每条 Finding 最终只能进入两种终局之一，不许无限堆积：
