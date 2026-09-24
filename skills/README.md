@@ -24,3 +24,10 @@
 - **其他系列 = 扩展**（工具能力，非角色范畴）：如 `superpowers/`、`chinese/`；sync 按二级 `<skill>` 目录名平铺到各载体 skills 根，**冲突不覆盖**（个人配置优先），治理自由生长。
 - 各载体的部署根由 `../bindings/<载体>/roots.conf` 自声明（未声明回退 `~/.agents/`），未来 CC / Codex 等载体各建各的。
 - 纪律：扩展 skill 提供**工具能力**不豁免 ACRS 行为契约——被 ACRS 角色使用时 result 块/接地证据/DC 勾对照常执行。
+
+## 写作规范（superpowers@v6.4.1 研读吸收，case-005#F-001）
+- **SDO 陷阱（技能发现度）**：SKILL.md 的 description **只写触发条件，不概括流程内容**——描述一旦概括了内容，Agent 会自以为读过而跳过正文（superpowers 实测：描述写"任务间做 review"，Agent 只执行 1 次而流程要求 2 次）。
+- **形态对准故障（Form-to-Failure）**：写约束时先问失守的形态是什么，再选形态——
+  纪律失守（Agent 找借口绕过）→ 禁令 + 借口/现实对照表（逐条预演合理化话术）；
+  输出形状错 → 正面 recipe 范例（纯禁令在此场景反而更糟，superpowers micro-test 实证：禁令组的劣化输出多于范例组）；
+  缺元素 → 结构化 REQUIRED 槽位；条件行为 → 可观察谓词（满足什么可观察条件才做什么）。
