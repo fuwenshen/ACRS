@@ -77,9 +77,10 @@
 - ⬜ 领域 Skill（如 java-backend / code-review）只在真实重复 ≥3 次后抽取（P9），非设计阶段预设。
 - 📌 **资产 → Skill 升级通道（2026-09-21 立）**：`assets/` 中某资产被 ≥2 项目独立复用且 FEEDBACK 消化过至少一轮 → 候选抽成领域 Skill 进 `skills/`（与 ⑥ 同判据；资产层是其前置实验田）。
 
-## Phase 5 · 跨平台 ⬜
-- ⬜ Claude Code binding（CLAUDE.md 作入口载体）——此时才触发 bindings 目录进一步重排
-- ⬜ Codex（AGENTS.md）· Cursor（Rules）
+## Phase 5 · 跨平台 🟡
+- 🟡 Claude Code binding（2026-09-24 已建 `bindings/claude/`：6 入口薄壳 Claude 格式 + roots.conf + frontmatter `skills` 预载 acrs-shared；CLAUDE.md 标记块 + 项目级 `.claude/{agents,skills}` 双部署形态。机制就绪，多 Agent 编排真跑 case 后升 🟢）
+- 🟡 Codex binding（2026-09-24 已建 `bindings/codex/`：6 入口 custom agent TOML（官方 subagents schema）+ roots.conf；skills 走开放标准 `~/.agents/skills/`（= acrs sync 回退默认，零适配）；AGENTS.md 标记块 + 项目级 `.codex/agents` + `.agents/skills` 双部署形态。机制就绪，真跑 case 后升 🟢）
+- ⬜ Cursor（Rules）
 - ⬜ **可移植对照**：同一套 Benchmark 上 JoyCode+ACRS vs ClaudeCode+ACRS vs Codex+ACRS
 - 🎯 成功判据：同一 Core，仅换 Binding 就保持一致行为；若需动 Core，说明规范里仍混着平台细节。
 - ⬜ **ACRS Capability Support Matrix**（**以后才做，非现在**）：`ACRS 能力（Evidence/Boundary/Handoff/Verification/Spawn/Context/Activation/Convention…）× 平台` 的支持矩阵，回答"这个平台支持哪些 ACRS 能力"。

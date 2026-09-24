@@ -157,7 +157,7 @@ cmd_sync() {
       done
     done
     echo "[acrs] [$carrier] agent 入口 → $ag_dir"
-    for f in "${b%/}"/agents/*.md; do
+    for f in "${b%/}"/agents/*; do
       [[ -f "$f" ]] || continue
       base=$(basename "$f"); n=$((n+1))
       if [[ -f "$ag_dir/$base" ]] && diff -q "$f" "$ag_dir/$base" >/dev/null 2>&1; then
@@ -186,7 +186,7 @@ ACRS 资产快捷工具
   acrs path                    打印当前 ACRS 根
   acrs assets                  列出全部可用资产
   acrs attach <领域/资产> [目录] 把资产登记行接入项目 .acrs/blueprint.md（默认当前目录）
-  acrs sync                    部署/校验 ACRS-native Skills + Agent 入口到 ~/.joycode（单向：仓库为准）
+  acrs sync                    部署/校验 ACRS-native Skills + Agent 入口到各载体（joycode→~/.joycode，claude→~/.claude，codex→~/.codex + ~/.agents/skills；单向：仓库为准）
   acrs feedback <领域/资产> <类型> <描述>
                               记录使用反馈到资产 FEEDBACK.md（类型: missing/wrong/stale/new）
 EOF
