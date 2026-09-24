@@ -1,0 +1,49 @@
+{
+  "task_id": "add-json-output",
+  "target_agent": "Backend",
+  "entry_type": "feature",
+  "grounding_mode": "baseline",
+  "environment": {
+    "prerequisites": [
+      "python3 (validator dependency)",
+      "bash 3.2+ (macOS default)"
+    ],
+    "commands": [
+      "bash test/validate/run.sh"
+    ],
+    "run_steps": [
+      "cd repo root",
+      "bash bin/acrs validate <fixture> --json"
+    ],
+    "sensitive_domains": []
+  },
+  "constraints": {
+    "sensitive_domains": [],
+    "note": "契约依据 rfc/RFC-006-Mechanical-Validation.md（Draft v0.1）——本任务即其实现的延伸；Draft 不作为注入 Artifact，仅作路径引用"
+  },
+  "injected_artifacts": [],
+  "design_checklist": [
+    {
+      "id": "DC-01",
+      "desc": "when --json passed with valid input -> single-line JSON on stdout with ok/errors/warnings counts -> exit 0",
+      "sensitive": false
+    },
+    {
+      "id": "DC-02",
+      "desc": "when ERROR exists and --json passed -> JSON contains errors array with rule ids -> exit 1",
+      "sensitive": false
+    },
+    {
+      "id": "DC-03",
+      "desc": "when human mode (no --json) -> output unchanged from current behavior -> tests stay green",
+      "sensitive": false
+    }
+  ],
+  "existing_test_files": [
+    "test/validate/run.sh"
+  ],
+  "acceptance_criteria": [
+    "all DC pass",
+    "bash test/validate/run.sh exit 0"
+  ]
+}

@@ -76,7 +76,7 @@ rename 陷阱：跨文件改名单文件 build=0 不足证安全，须全仓查�
 | G-CLARIFY 需求澄清 | 派实现/设计前；bugfix 派 solo 前跑期望行为探针 | 五类扫描无实质分叉，或已冻 spec@APPROVED | 禁止派发 → 问清 → 冻 spec | TRIVIAL/FAST_TRACK(机械等价)/用户已给详细 spec/CONSULT/AUDIT |
 | G-DESIGN 方向审 | 设计完成后、派评审前 | 用户 approve 记录（摘要+DC 清单已展示） | 回设计者改方向（不计 retry） | TRIVIAL/纯文档/用户声明照做 |
 | G-REVIEW 技术评审 | semantics≠机械等价 且（敏感域或 blast≥跨模块） | 评审 verdict=PASS/PASS_WITH_NITS | 按 route_back_to 回退 | FAST_TRACK；SOLO=连贯性抽检(§六) |
-| G-ACCEPTANCE 验收 | 判 DONE 前 | checklist_coverage 全覆盖 + 勾对无缺失/偏离 | 禁止 DONE：缺实现回 Backend/缺测试回 Test/方向回 Architect | TRIVIAL/FAST_TRACK |
+| G-ACCEPTANCE 验收 | 判 DONE 前 | checklist_coverage 全覆盖 + 勾对无缺失/偏离（落盘件经 `acrs validate --result` exit 0，契约 RFC/RFC-006） | 禁止 DONE：缺实现回 Backend/缺测试回 Test/方向回 Architect | TRIVIAL/FAST_TRACK |
 | G-GROUNDING 接地 | 判 DONE 前 | 按 mode：full→test=0；scoped→子集=0；baseline→new_failures=0；有构建→build=0 | 禁止 DONE，回对应实例 | scaffold/waiver 按 mode |
 | G-COMPAT 兼容 | 对外发布且签名变更 | 废弃/双版本/灰度方案已在设计中 | 回设计者补方案 | 无签名变更 |
 | G-HUMAN 人工 | 不可逆/对外发布/命中 frozen/HIGH_BREAKING | 人工确认记录 | 等人决策 | — |
@@ -172,7 +172,7 @@ mode 选择：全量快且干净→full；测试慢/只改局部→scoped；**�
 }
 ```
 
-只注入 status∈{APPROVED,FROZEN} 的 Artifact；design_checklist 派 Test/评审时必带。**派发前读项目 `.acrs/blueprint.md` 资产段（case-002#F-006）**：存在 `asset:` 挂载时，按该资产 README 场景表把相关文件路径写入注入包（按需非全量；ACRS_ROOT=`cat ~/.acrs/path`）；其 MUST 须拆进 design_checklist 才为硬约束，未进 DC 只算参考。**environment（case-001#F-6）必填**：依赖服务怎么起（如 MySQL）、工具链参数（如 maven repo.local 路径）、端口占用现状——从 blueprint `prerequisites` 段读取，防每个角色自己重踩一遍。
+只注入 status∈{APPROVED,FROZEN} 的 Artifact；design_checklist 派 Test/评审时必带。**派发前注入包 MUST 落盘为 `<项目>/.acrs/handoff/<task_id>.json` 并过 `acrs validate`（exit 0；fail-closed：读不到=不达标）——契约与判据见 RFC/RFC-006**，总控按此把「自觉核对」下沉为退出码凭据。**派发前读项目 `.acrs/blueprint.md` 资产段（case-002#F-006）**：存在 `asset:` 挂载时，按该资产 README 场景表把相关文件路径写入注入包（按需非全量；ACRS_ROOT=`cat ~/.acrs/path`）；其 MUST 须拆进 design_checklist 才为硬约束，未进 DC 只算参考。**environment（case-001#F-6）必填**：依赖服务怎么起（如 MySQL）、工具链参数（如 maven repo.local 路径）、端口占用现状——从 blueprint `prerequisites` 段读取，防每个角色重踩一遍环境坑。
 
 ## 十、载体特定注意事项（pointer）
 

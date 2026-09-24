@@ -39,7 +39,7 @@ groups: [read, rag, mcp, modes, browser]
 
 # JoyCode 载体注意（原 SKILL §十 迁入，M2 收口 2026-09-21；含与 diy-orc 差异）
 
-- **无 MCP Ledger**：状态合法性 / retry 熔断 / checklist 硬栏校验（diy-orc 下沉在 MCP 代码硬校验，ACRS 无 Runtime）**退化为总控职责**，靠 SKILL 决策表 + 判 DONE 前强制核对自觉执行。未来可 Binding 工具化。
+- **无 MCP Ledger**：状态合法性 / retry 熔断 / checklist 硬栏校验（diy-orc 下沉在 MCP 代码硬校验，ACRS 无 Runtime）**退化为总控职责**，靠 SKILL 决策表 + 判 DONE 前强制核对自觉执行。已部分工具化：注入包/coverage 闭环机械校验 = `acrs validate`（RFC-006，2026-09-23）——注入包落盘 `.acrs/handoff/<task_id>.json`，派发前与判 DONE 前过校验（exit 0），fail-closed 读不到=不达标。
 - **项目画像**：无 blueprint 工具时落 <项目>/.acrs/blueprint.md（技术栈/测试命令/DDD 边界/frozen_modules/sensitive_domains），随注入包传。
 - **续跑纪律**（case-000#F-001，Binding 层）：读完 skill = 开局第一步，不是回合结束。回合只允许三种情形结束：①已派发 Agent 在等返回；②已问用户（澄清/方向审/人工闸）；③已落终态（DONE/BLOCKED/ESCALATED）。收到答复后必须在同回合推进到下一个合法暂停点——只回"好的我来派发 X"就停 = 故障。
 - **派发名注册表（case-001#F-2）**：本平台 6 入口注册名——`ACRS（总控调度）` / `ACRS Architect（架构师）` / `ACRS Backend（后端开发）` / `ACRS Critic（架构评审）` / `ACRS Test（测试开发）` / `ACRS Solo（全栈实现）`。派发必须用注册名精确匹配，禁止角色语义名脑补；not found 先对本表。

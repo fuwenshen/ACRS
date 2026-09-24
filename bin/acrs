@@ -172,6 +172,219 @@ cmd_sync() {
   echo "[acrs] 完成：${n} 项检查，${updated} 项更新（acrs 系=native 单向仓库为准；其他系列冲突不覆盖）"
 }
 
+# ---------- validate：注入包/闭环机械校验（契约：RFC/RFC-006-Mechanical-Validation.md）----------
+# 判据以 RFC-006 §3 为准（C8 schema 唯一权威）；实现与本篇不一致时修实现。
+# fail-closed：读不到/解析失败/依赖缺失一律 ERROR 退出，禁止静默放行（RFC-006 C3-C5）。
+cmd_validate() {
+  local handoff="" result="" strict=0 root="" jsonout=0
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --result) result="$2"; shift 2 ;;
+      --strict) strict=1; shift ;;
+      --json) jsonout=1; shift ;;
+      --root) root="$2"; shift 2 ;;
+      -*) echo "[acrs] 未知选项: $1（用法见 acrs validate --help 或无参提示）" >&2; exit 2 ;;
+      *) if [[ -n "$handoff" ]]; then echo "[acrs] 多余参数: $1" >&2; exit 2; fi; handoff="$1"; shift ;;
+    esac
+  done
+  if [[ -z "$handoff" ]]; then
+    cat <<'EOF'
+用法: acrs validate <handoff.json> [--result <result.json>] [--strict] [--json] [--root <项目根>]
+  机械校验注入包（RFC-006 §3.2/3.3）；--result 附带时校验 coverage 闭环（§3.4）
+  --json 输出单行 JSON 结论（ok/errors/warnings/error_count/warning_count，元素带规则 id）
+  退出码: 0=通过  1=存在 ERROR（或 --strict 下 WARNING）  2=用法错误
+EOF
+    exit 2
+  fi
+  # C4 fail-closed：依赖缺失 → ERROR，禁止静默跳过校验
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "ERROR [C4] python3 不可用——fail-closed 拒绝校验（RFC-006 C4）" >&2
+    exit 1
+  fi
+  # C3 fail-closed：读不到输入 → ERROR（bash 层先报一层，python 层兜底）
+  if [[ ! -f "$handoff" ]]; then
+    echo "ERROR [C3] 注入包文件不存在或不可读: ${handoff}（RFC-006 C3）" >&2
+    exit 1
+  fi
+  [[ -n "$result" && ! -f "$result" ]] && { echo "ERROR [C3] result 文件不存在或不可读: ${result}（RFC-006 C3）" >&2; exit 1; }
+  python3 - "$handoff" "$result" "$strict" "$root" "$jsonout" <<'PYEOF'
+import json, os, re, sys
+
+handoff_path, result_path, strict, root, json_mode = sys.argv[1], sys.argv[2], int(sys.argv[3]), sys.argv[4], int(sys.argv[5])
+errors, warnings = [], []
+MODES = {"full", "baseline", "scoped", "scaffold", "trivial", "waiver"}
+STATUS_OK = {"APPROVED", "FROZEN"}
+RES_STATUS = {"DONE", "PARTIAL", "ESCALATED", "BLOCKED"}
+
+def err(rule, msg): errors.append(f"[{rule}] {msg}")
+def warn(rule, msg): warnings.append(f"[{rule}] {msg}")
+
+def load(path, what):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, json.JSONDecodeError) as e:
+        err("C3", f"{what} 读取/解析失败（fail-closed）: {e}")
+        return None
+
+def nonempty_str(v):
+    return isinstance(v, str) and v.strip() != ""
+
+# ---------- 注入包校验（RFC-006 §3.2/3.3） ----------
+hp = load(handoff_path, "注入包")
+if hp is not None:
+    if not isinstance(hp, dict):
+        err("V1.x", "注入包顶层必须是 JSON 对象")
+        hp = None
+if hp is not None:
+    # V1.1 必填字段
+    for k in ("task_id", "target_agent", "entry_type", "grounding_mode"):
+        if not nonempty_str(hp.get(k)):
+            err("V1.1", f"必填字段缺失或为空: {k}")
+    # C2 task_id 文件名安全
+    tid = hp.get("task_id")
+    if nonempty_str(tid) and not re.fullmatch(r"[A-Za-z0-9_.-]+", tid):
+        err("C2", f"task_id 不可作文件名（仅限 [A-Za-z0-9_.-]）: {tid!r}")
+    # V1.2 environment 两级判据
+    env = hp.get("environment")
+    if env is None:
+        warn("V1.2", "environment 整体缺失（若为非首次派发可忽略）")
+    elif not isinstance(env, dict):
+        err("V1.2", "environment 必须是对象")
+    else:
+        pre = env.get("prerequisites")
+        if not (isinstance(pre, list) and any(isinstance(x, str) and x.strip() for x in pre)):
+            err("V1.2", "environment 存在但 prerequisites 为空数组（形式主义填充）")
+    # V1.3 grounding_mode 枚举
+    gm = hp.get("grounding_mode")
+    if nonempty_str(gm) and gm not in MODES:
+        err("V1.3", f"grounding_mode 非法: {gm!r}（合法: {sorted(MODES)}）")
+    # V1.4 injected_artifacts[].status
+    arts = hp.get("injected_artifacts", [])
+    if not isinstance(arts, list): arts = []
+    for i, a in enumerate(arts):
+        st = a.get("status") if isinstance(a, dict) else None
+        if st not in STATUS_OK:
+            err("V1.4", f"injected_artifacts[{i}].status 非法: {st!r}（只认 {sorted(STATUS_OK)}）")
+    # V1.5 design_checklist 硬格式
+    dcs = hp.get("design_checklist", [])
+    if not isinstance(dcs, list): dcs = []
+    seen = {}
+    for i, d in enumerate(dcs):
+        if not isinstance(d, dict):
+            err("V1.5", f"design_checklist[{i}] 必须是对象"); continue
+        did = d.get("id")
+        if not nonempty_str(did) or not re.fullmatch(r"DC-[0-9]+", did):
+            err("V1.5", f"design_checklist[{i}].id 格式非法: {did!r}（须 ^DC-[0-9]+$）")
+        elif did in seen:
+            err("V1.5", f"design_checklist id 重复: {did}（首见于 [{seen[did]}]）")
+        else:
+            seen[did] = i
+        if not nonempty_str(d.get("desc")):
+            err("V1.5", f"design_checklist[{i}].desc 为空")
+        if not isinstance(d.get("sensitive"), bool):
+            err("V1.5", f"design_checklist[{i}].sensitive 必须是布尔")
+    # V1.6 constraints.sensitive_domains
+    cons = hp.get("constraints", {})
+    if not isinstance(cons, dict): cons = {}
+    sd = cons.get("sensitive_domains", [])
+    if not (isinstance(sd, list) and all(isinstance(x, str) for x in sd)):
+        err("V1.6", "constraints.sensitive_domains 必须是字符串数组")
+    # V1.7 existing_test_files
+    etf = hp.get("existing_test_files", [])
+    if not isinstance(etf, list): etf = []
+    for i, p in enumerate(etf):
+        if not isinstance(p, str):
+            err("V1.7", f"existing_test_files[{i}] 必须是字符串")
+    # W1.1 敏感联动缺口
+    if any(isinstance(d, dict) and d.get("sensitive") is True for d in dcs) and not sd:
+        warn("W1.1", "存在 sensitive:true 的 DC 但 constraints.sensitive_domains 为空")
+    # W1.2 既有测试文件存在性（相对 --root；缺省按 C1 布局 .acrs/handoff/x.json 上推三级=项目根）
+    proj_root = root or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(handoff_path))))
+    for p in etf:
+        if isinstance(p, str) and p.strip() and not os.path.exists(os.path.join(proj_root, p)):
+            warn("W1.2", f"existing_test_files 不存在（若是待建可忽略）: {p}")
+    # W1.3 空计划
+    ac = hp.get("acceptance_criteria", [])
+    if not dcs and not (isinstance(ac, list) and ac):
+        warn("W1.3", "design_checklist 与 acceptance_criteria 同时为空（TRIVIAL 型可忽略）")
+
+# ---------- result 侧闭环（RFC-006 §3.4） ----------
+dc_ids = set()
+if isinstance(hp, dict):
+    dc_ids = {d.get("id") for d in hp.get("design_checklist", []) if isinstance(d, dict) and nonempty_str(d.get("id"))}
+sensitive_ids = set()
+if isinstance(hp, dict):
+    sensitive_ids = {d.get("id") for d in hp.get("design_checklist", [])
+                     if isinstance(d, dict) and d.get("sensitive") is True and nonempty_str(d.get("id"))}
+
+if result_path:
+    rp = load(result_path, "result")
+    if rp is not None and not isinstance(rp, dict):
+        err("V2.x", "result 顶层必须是 JSON 对象"); rp = None
+    if rp is not None:
+        st = rp.get("status")
+        if st not in RES_STATUS:
+            err("V2.1", f"status 非法: {st!r}（合法: {sorted(RES_STATUS)}）")
+        cov = rp.get("checklist_coverage", [])
+        if not isinstance(cov, list): cov = []
+        covered = {}
+        for i, c in enumerate(cov):
+            if not isinstance(c, dict):
+                err("V2.3", f"checklist_coverage[{i}] 必须是对象"); continue
+            cid = c.get("dc")
+            if not nonempty_str(cid):
+                err("V2.3", f"checklist_coverage[{i}].dc 为空"); continue
+            if cid in covered:
+                err("V2.3", f"checklist_coverage 重复条目: {cid}")
+            covered[cid] = c
+            has_tc = nonempty_str(c.get("test_case"))
+            has_reason = nonempty_str(c.get("reason"))
+            if not (has_tc or has_reason):
+                err("V2.3", f"{cid} 缺 test_case 或 reason（二选一非空）")
+        # V2.2 全覆盖 + 无多余
+        missing = dc_ids - set(covered)
+        if missing:
+            err("V2.2", f"checklist_coverage 缺失 DC 条目: {sorted(missing)}")
+        extra = set(covered) - dc_ids
+        if extra:
+            err("V2.2", f"checklist_coverage 引用了注入包不存在的 DC: {sorted(extra)}")
+        # V2.4 敏感必测
+        s_missing = sensitive_ids - set(covered)
+        if s_missing:
+            err("V2.4", f"敏感 DC 缺 coverage（必测）: {sorted(s_missing)}")
+        # V2.5 退出码接地
+        gr = rp.get("grounding", {})
+        if not isinstance(gr, dict): gr = {}
+        codes = [gr.get("build_exit_code"), gr.get("test_exit_code")]
+        if not any(isinstance(c, int) for c in codes):
+            err("V2.5", "grounding 缺少整数 build_exit_code / test_exit_code（无退出码的『完成』=违约）")
+        # W2.1 DONE 伴未覆盖
+        if st == "DONE":
+            reason_only = [cid for cid, c in covered.items() if not nonempty_str(c.get("test_case"))]
+            if reason_only:
+                warn("W2.1", f"status=DONE 但存在未测条目（非敏感）: {sorted(reason_only)}")
+
+# ---------- 输出与退出码（RFC-006 C6） ----------
+fail = bool(errors or (strict and warnings))
+if json_mode:
+    print(json.dumps({
+        "ok": not fail,
+        "errors": errors,
+        "warnings": warnings,
+        "error_count": len(errors),
+        "warning_count": len(warnings),
+    }, ensure_ascii=False))
+    sys.exit(1 if fail else 0)
+for w in warnings: print(f"WARNING {w}")
+for e in errors: print(f"ERROR {e}")
+blk = "（--strict：WARNING 亦阻断）" if strict else ""
+print(f"—— validate: {len(errors)} ERROR, {len(warnings)} WARNING{blk} → {'不通过' if fail else '通过'}")
+sys.exit(1 if fail else 0)
+PYEOF
+  return $?
+}
+
 case "${1:-}" in
   init) cmd_init ;;
   path) cmd_path ;;
@@ -179,6 +392,7 @@ case "${1:-}" in
   attach) shift; cmd_attach "$@" ;;
   sync) cmd_sync ;;
   feedback) shift; cmd_feedback "$@" ;;
+  validate) shift; cmd_validate "$@" ;;
   *) cat <<'EOF'
 ACRS 资产快捷工具
 用法:
@@ -189,6 +403,8 @@ ACRS 资产快捷工具
   acrs sync                    部署/校验 ACRS-native Skills + Agent 入口到各载体（joycode→~/.joycode，claude→~/.claude，codex→~/.codex + ~/.agents/skills；单向：仓库为准）
   acrs feedback <领域/资产> <类型> <描述>
                               记录使用反馈到资产 FEEDBACK.md（类型: missing/wrong/stale/new）
+  acrs validate <handoff.json> [--result <result.json>] [--strict] [--json] [--root <项目根>]
+                              机械校验注入包/coverage 闭环（契约: RFC/RFC-006；退出码 0/1/2；--json=单行 JSON 结论）
 EOF
   exit 1 ;;
 esac

@@ -1,0 +1,22 @@
+{
+  "status": "DONE",
+  "checklist_coverage": [
+    {
+      "dc": "DC-01",
+      "test_case": "test/validate/run.sh :: --json 正例+单行合法 JSON（PASS）"
+    },
+    {
+      "dc": "DC-02",
+      "test_case": "test/validate/run.sh :: --json 反例 ok:false+errors 含 rule id（PASS）"
+    },
+    {
+      "dc": "DC-03",
+      "test_case": "test/validate/run.sh :: 人类模式输出不变+26 PASS/0 FAIL（PASS）"
+    }
+  ],
+  "grounding": {
+    "build_exit_code": 0,
+    "test_exit_code": 0,
+    "note": "test=26 PASS 0 FAIL exit 0（总控亲测复跑）"
+  }
+}

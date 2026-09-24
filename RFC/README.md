@@ -12,6 +12,7 @@
 | [RFC-000A-Terminology.md](RFC-000A-Terminology.md) | 术语冻结：Context/Handoff/Evidence/Boundary 等动词的唯一定义 | **Frozen (v1.0)** |
 | [RFC-000B-Core-Admission-Protocol.md](RFC-000B-Core-Admission-Protocol.md) | Core 准入协议：条款如何进入 Core、RFC 如何升版 | **Active (v1.0)** |
 | [RFC-001-Runtime-Lifecycle.md](RFC-001-Runtime-Lifecycle.md) | 运行时生命周期：任务从进 Context 到 Handoff 的状态机 | **Frozen Candidate (v0.2)**——已逐节标注实证，转 Frozen 差 §8 判据 1/3 |
+| [RFC-006-Mechanical-Validation.md](RFC-006-Mechanical-Validation.md) | 机械校验契约：注入包落盘 + validate 判据集 + fail-closed + 退出码接地（case-005#F-002 H-1 落地） | **Frozen Candidate (v0.2)**——§5 判据满足（case-006 真实派发 + V1.4 实战拦截），转 Frozen 差持续 RI |
 | [runtime-sequence.md](runtime-sequence.md) | 运行时序图：RFC-000A 术语的"单元测试"（箭头画不出=术语有洞） | Draft |
 
 规划槽位（未写）：RFC-002 Handoff Package（WHAT）、RFC-003 Loop、RFC-004 Skill、RFC-005 Evidence & Boundary。
