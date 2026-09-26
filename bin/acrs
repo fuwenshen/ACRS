@@ -18,7 +18,10 @@ cmd_init() {
   local root
   root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
   mkdir -p "$HOME/.acrs"
-  printf '%s' "$root" > "$ACRS_PATH_FILE"
+  if ! printf '%s' "$root" > "$ACRS_PATH_FILE"; then
+    echo "[acrs] 写入失败: 无法写入指针文件 $ACRS_PATH_FILE" >&2
+    exit 1
+  fi
   local n
   n=$(find "$root/assets" -name 'README.md' -mindepth 3 -maxdepth 3 2>/dev/null | wc -l | tr -d ' ')
   echo "[acrs] 已登记 ACRS 根: $root"
@@ -62,17 +65,19 @@ cmd_attach() {
     echo "[acrs] 已接入过: $bp 中存在 asset: $rel"
     return 0
   fi
-  {
-    [[ -f "$bp" ]] || printf '# %s 项目蓝图\n' "$(basename "$project")"
-    cat <<EOF
-
+  local head body
+  [[ -f "$bp" ]] || head="# $(basename "$project") 项目蓝图"$'\n'
+  body="
 ## 知识资产（ACRS assets）
 - asset: $rel
   路径: \$ACRS_ROOT/assets/$rel   # ACRS_ROOT = \$(cat ~/.acrs/path)
   场景: 按该资产 README 加载表，core-must 类恒载 + 按任务场景加载
   约束力: 相关 MUST 须拆进 design_checklist（DC-xx）才为硬约束
-EOF
-  } >> "$bp"
+"
+  if ! printf '%s' "${head}${body}" >> "$bp"; then
+    echo "[acrs] 写入失败: 无法写入 ${bp}（检查目录权限 / 磁盘空间）" >&2
+    exit 1
+  fi
   echo "[acrs] 已接入资产 $rel → $bp"
   echo "[acrs] Agent 派发时按注入包携带的 blueprint 定位并按需加载（见资产 README 场景表）"
 }
@@ -91,7 +96,7 @@ cmd_feedback() {
   local fb="$root/assets/$rel/FEEDBACK.md"
   [[ -d "$root/assets/$rel" ]] || { echo "[acrs] 资产不存在: ${rel}（acrs assets 查看清单）" >&2; exit 1; }
   if [[ ! -f "$fb" ]]; then
-    cat > "$fb" <<'EOF'
+    cat > "$fb" <<'EOF' || { echo "[acrs] 写入失败: 无法创建 $fb" >&2; exit 1; }
 # 使用反馈日志（append-only）
 
 > 记录真实项目使用中发现的资产问题。消化规则见 [../README.md](../README.md) §自我进化反哺。
@@ -101,7 +106,8 @@ cmd_feedback() {
 
 EOF
   fi
-  printf -- "- %s | %s | %s | %s\n" "$(date +%F)" "$(basename "$PWD")" "$type" "$desc" >> "$fb"
+  printf -- "- %s | %s | %s | %s\n" "$(date +%F)" "$(basename "$PWD")" "$type" "$desc" >> "$fb" \
+    || { echo "[acrs] 写入失败: 无法写入 $fb" >&2; exit 1; }
   echo "[acrs] 已记录反馈 → $fb"
   echo "[acrs] 消化规则：同一问题 ≥2 独立项目命中即行动（派生资产路由上游，原生资产直接改）"
 }
